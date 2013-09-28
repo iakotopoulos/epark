@@ -22,7 +22,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * This is a low level connection tester class. It was created in order to test the 
+ * direct connection with a reader with the use of a socket. The high level API is recommended
  * @author I-A
  */
 public class ReaderTest {

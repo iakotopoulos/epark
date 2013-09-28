@@ -8,7 +8,6 @@ import CSLibrary.Constants.RFState;
 import CSLibrary.Constants.Result;
 import CSLibrary.Events.StateChangedEventArgs;
 import CSLibrary.Events.StateChangedEventListener;
-import static epark.local.rfid.ReaderHighLevelTest.ReaderXP;
 
 /**
  *
@@ -29,12 +28,12 @@ public class ReaderStateChabgedListener implements StateChangedEventListener {
         switch (ev.state) {
             case RFState.IDLE:
                 //Check whether fail
-                if (ReaderXP.LastResultCode() == Result.NETWORK_RESET) {
+                if (the_Manager.getReaderXP().LastResultCode() == Result.NETWORK_RESET) {
                     //Use other thread to create progress
                     reset = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            if ((ReaderXP.Reconnect()) == Result.OK) {
+                            if ((the_Manager.getReaderXP().Reconnect()) == Result.OK) {
                                 //Start inventory
                                 the_Manager.Start();
                             } else {
