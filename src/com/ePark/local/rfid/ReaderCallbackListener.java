@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package epark.local.rfid;
+package com.ePark.local.rfid;
 
 import CSLibrary.Constants.CallbackType;
 import CSLibrary.Events.AsyncCallbackEventArgs;

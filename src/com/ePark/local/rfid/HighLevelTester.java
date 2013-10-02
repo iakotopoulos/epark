@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package epark.local.rfid;
+package com.ePark.local.rfid;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

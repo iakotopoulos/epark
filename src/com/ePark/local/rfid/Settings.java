@@ -1,4 +1,4 @@
-package epark.local.rfid;
+package com.ePark.local.rfid;
 
 import java.io.*;
 import CSLibrary.Constants.*;

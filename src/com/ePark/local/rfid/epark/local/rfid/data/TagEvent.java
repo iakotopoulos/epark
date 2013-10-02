@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package epark.local.rfid.data;
+package com.ePark.local.rfid.epark.local.rfid.data;
 
 import java.sql.Timestamp;
 

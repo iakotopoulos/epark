@@ -2,14 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package epark.local.rfid;
+package com.ePark.local.rfid;
 
 import CSLibrary.Constants.Operation;
 import CSLibrary.Constants.RFState;
 import CSLibrary.Constants.RadioOperationMode;
 import CSLibrary.Constants.SelectFlags;
 import CSLibrary.HighLevelInterface;
-import epark.local.rfid.data.TagEvent;
+import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
 import java.sql.Timestamp;
 import java.util.LinkedHashMap;
 
