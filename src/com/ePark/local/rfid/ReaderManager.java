@@ -15,9 +15,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 /**
- * This is the main class used to manage a reader's connections and events. This class
- * will either be refactored to conform a list of readers or another class should be added to 
- * handle all the local readers
+ * This is the main class used to manage a reader's connections and events. This
+ * class will either be refactored to conform a list of readers or another class
+ * should be added to handle all the local readers
+ *
  * @author I-A
  */
 public class ReaderManager {
@@ -29,28 +30,41 @@ public class ReaderManager {
     public ReaderManager() {
         readerList = new LinkedHashMap<>();
         tagList = new LinkedHashMap<>();
-        
+
     }
 
     /**
-     * The method is used to directly connect with a reader at the specified IP address
-     * @param ip the ip of the target reader. The IP must be known or a default IP will be used
+     * The method is used to directly connect with a reader at the specified IP
+     * address
+     *
+     * @param ip the ip of the target reader. The IP must be known or a default
+     * IP will be used
      * @throws Exception in case a connection was not possible
      */
     public void connect(String ip) throws Exception {
-        HighLevelInterface newReaderXP = new HighLevelInterface();
-        newReaderXP.addStateChangedEventListener(new ReaderStateChabgedListener(this, ip));
-        newReaderXP.addAsyncCallbackEventListener(new ReaderCallbackListener(this));
-        
-        
         ip = (ip == null ? "192.168.25.203" : ip);
-        int r = newReaderXP.Connect(ip, 15000);
-        if (r != CSLibrary.Constants.Result.OK) {
-            throw new Exception("Connection failed");
-        } else {
-            System.out.println("Connection established with reader (ip=" + ip + ")");
-            readerList.put(ip, newReaderXP);
+        Thread rd = new Thread(new ReaderThread(ip));
+        rd.start();
+        try {
+            rd.join(500);
+        } catch (InterruptedException ex) {
         }
+
+
+
+        /*HighLevelInterface newReaderXP = new HighLevelInterface();
+         newReaderXP.addStateChangedEventListener(new ReaderStateChabgedListener(this, ip));
+         newReaderXP.addAsyncCallbackEventListener(new ReaderCallbackListener(this));
+        
+        
+         ip = (ip == null ? "192.168.25.203" : ip);
+         int r = newReaderXP.Connect(ip, 15000);
+         if (r != CSLibrary.Constants.Result.OK) {
+         throw new Exception("Connection failed");
+         } else {
+         System.out.println("Connection established with reader (ip=" + ip + ")");
+         readerList.put(ip, newReaderXP);
+         }*/
     }
 
     public HighLevelInterface getReaderXP(String ip) {
@@ -58,11 +72,10 @@ public class ReaderManager {
     }
 
     public void Start() {
-       startReader(ReaderXP1);
+        startReader(ReaderXP1);
     }
-    
-    
-    public void startReader(HighLevelInterface rfReader){
+
+    public void startReader(HighLevelInterface rfReader) {
         if (rfReader.GetState() == RFState.IDLE) {
             rfReader.SetOperationMode(Settings.custInventory_continuous ? RadioOperationMode.CONTINUOUS : RadioOperationMode.NONCONTINUOUS);
             rfReader.SetTagGroup(Settings.tagGroup);
@@ -74,9 +87,11 @@ public class ReaderManager {
     }
 
     /**
-     * The method adds the new event. It is responsible for searching if the event's tagid
-     * already exists. If the tagid already exists only the timestamp of the event is added. If it 
-     * is the first time a new event is added with the current timestamp
+     * The method adds the new event. It is responsible for searching if the
+     * event's tagid already exists. If the tagid already exists only the
+     * timestamp of the event is added. If it is the first time a new event is
+     * added with the current timestamp
+     *
      * @param tagid the tagid of the current event
      */
     void newTagEvent(String tagid) {
@@ -85,7 +100,7 @@ public class ReaderManager {
         } else {
             tagList.put(tagid, new TagEvent(tagid, new Timestamp(System.currentTimeMillis())));
         }
-        
+
         System.out.println(tagList.get(tagid));
         System.out.println("--------------------------------------------------------------------------");
     }

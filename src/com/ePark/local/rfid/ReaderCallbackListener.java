@@ -16,20 +16,23 @@ import CSLibrary.Structures.TagCallbackInfo;
 public class ReaderCallbackListener implements AsyncCallbackEventListener {
 
     private final ReaderManager the_Manager;
+    private final String ip;
 
-    public ReaderCallbackListener(ReaderManager rmgr) {
+    public ReaderCallbackListener(ReaderManager rmgr, String ip) {
         the_Manager = rmgr;
+        this.ip=ip;
     }
 
     @Override
-    public void AsyncCallbackEvent(AsyncCallbackEventArgs ev) {
+    public void AsyncCallbackEvent(AsyncCallbackEventArgs ev) {        
 
         if (ev.type == CallbackType.TAG_RANGING) {
             TagCallbackInfo record = ev.info;
+            
            // Object[] entry = new Object[]{new Integer(record.index), record.pc.ToString(), record.epc.ToString(), new Float(record.rssi), new Integer(record.count)};
            // System.out.println("TagID " + record.epc.ToString());
-            
-            the_Manager.newTagEvent(record.epc.ToString());
+            System.out.println("Event from Reader: " + ip);
+            //the_Manager.newTagEvent(record.epc.ToString());
 
         }
     }

@@ -13,32 +13,33 @@ import CSLibrary.Events.StateChangedEventListener;
  *
  * @author I-A
  */
-public class ReaderStateChabgedListener implements StateChangedEventListener {
+public class ReaderTaskStateChangedListener implements StateChangedEventListener {
 
-    private final ReaderManager the_Manager;
+    private final ReaderThread readerThread;
     private Thread reset;
     private String ip;
 
-    public ReaderStateChabgedListener(ReaderManager rmgr, String ip) {
-        this.the_Manager = rmgr;
+    public ReaderTaskStateChangedListener(ReaderThread rmgr, String ip) {
+        this.readerThread = rmgr;
         this.ip = ip;     
     }
 
     @Override
     public void StateChangedEvent(StateChangedEventArgs ev) {
-        System.out.println("StateChanged");
+        System.out.println("Started " + ip + " " + ev.state);
         switch (ev.state) {
             case RFState.IDLE:
                 //Check whether fail
-                if (the_Manager.getReaderXP(ip).LastResultCode() == Result.NETWORK_RESET) {
+                if (readerThread.getReaderXP().LastResultCode() == Result.NETWORK_RESET) {
                     //Use other thread to create progress
                     reset = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            if ((the_Manager.getReaderXP(ip).Reconnect(10)) == Result.OK) {
+                            if ((readerThread.getReaderXP().Reconnect(10)) == Result.OK) {
                                 //Start inventory
-                                the_Manager.Start();
+                                readerThread.startReader();
                             } else {
+                                System.out.println("Error!");
                                 //Fail
                             }
                         }
