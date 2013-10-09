@@ -17,10 +17,8 @@ public class HighLevelTester {
 
     public static void main(String[] args) {
         try {
-            ReaderManager testManager = new ReaderManager();
-            testManager.connect("192.168.25.203");
-
-
+            ReaderManagerP testManager = new ReaderManagerP();
+            testManager.connect("192.168.25.203");         
             testManager.connect("192.168.25.111");
 
 

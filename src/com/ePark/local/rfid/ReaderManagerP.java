@@ -10,6 +10,8 @@ import CSLibrary.Constants.RadioOperationMode;
 import CSLibrary.Constants.SelectFlags;
 import CSLibrary.HighLevelInterface;
 import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
+import com.ePark.local.task.ReaderProcess;
+import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -21,16 +23,22 @@ import java.util.LinkedHashMap;
  *
  * @author I-A
  */
-public class ReaderManager {
+public class ReaderManagerP {
 
-    private HighLevelInterface ReaderXP1;
+    public static final int MAX_PROCESS = 5;
+    private Thread[] m_run_process;
+    public static Process[] m_javap;
+    public static int lastProcessId;
+    static PrintWriter outputCommand;
     private LinkedHashMap<String, TagEvent> tagList;
     private LinkedHashMap<String, HighLevelInterface> readerList;
 
-    public ReaderManager() {
+    public ReaderManagerP() {
         readerList = new LinkedHashMap<>();
         tagList = new LinkedHashMap<>();
-
+        lastProcessId = 0;
+        m_run_process = new Thread[MAX_PROCESS];
+        m_javap = new Process[MAX_PROCESS];
     }
 
     /**
@@ -43,33 +51,14 @@ public class ReaderManager {
      */
     public void connect(String ip) throws Exception {
         ip = (ip == null ? "192.168.25.203" : ip);
-        Thread rd = new Thread(new ReaderThread(ip));
-        rd.start();
-        try {
-            rd.join(500);
-        } catch (InterruptedException ex) {
-        }
+
+        m_run_process[lastProcessId] = new Thread(new ReaderProcess(ip));        
+        m_run_process[lastProcessId].start();
+        m_run_process[lastProcessId].join(500);
+
+        ++lastProcessId;
 
 
-    }
-
-    public HighLevelInterface getReaderXP(String ip) {
-        return readerList.get(ip);
-    }
-
-    public void Start() {
-        startReader(ReaderXP1);
-    }
-
-    public void startReader(HighLevelInterface rfReader) {
-        if (rfReader.GetState() == RFState.IDLE) {
-            rfReader.SetOperationMode(Settings.custInventory_continuous ? RadioOperationMode.CONTINUOUS : RadioOperationMode.NONCONTINUOUS);
-            rfReader.SetTagGroup(Settings.tagGroup);
-            rfReader.SetSingulationAlgorithmParms(Settings.singulation, Settings.GetSingulationAlg());
-
-            rfReader.GetOptions().TagInventory.flags = SelectFlags.ZERO;
-            rfReader.StartOperation(Operation.TAG_RANGING, Settings.custInventory_blocking_mode);
-        }
     }
 
     /**
