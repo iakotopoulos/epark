@@ -8,6 +8,7 @@ import com.ePark.local.rfid.ReaderManagerP;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 /**
  *
@@ -15,10 +16,12 @@ import java.io.InputStreamReader;
  */
 public class ReaderProcess implements Runnable {
 
+    private ReaderManagerP theManager;
     private String ip;
 
-    public ReaderProcess(String ip) {
+    public ReaderProcess(String ip, ReaderManagerP tm) {
         this.ip = ip;
+        this.theManager = tm;
     }
 
     @Override
@@ -26,15 +29,16 @@ public class ReaderProcess implements Runnable {
         ProcessBuilder builder = new ProcessBuilder("java", "-jar", "EparkTask.jar", "-ip", ip);
 
         try {
-            if (ReaderManagerP.lastProcessId > ReaderManagerP.MAX_PROCESS) {
+            if (theManager.getLastProcessId() > ReaderManagerP.MAX_PROCESS) {
                 System.out.println("Error: Exceed the maximum number of allowable process.");
                 return;
             }
-            ReaderManagerP.m_javap[ReaderManagerP.lastProcessId] = builder.start();
-            writeProcessOutput(ReaderManagerP.m_javap[ReaderManagerP.lastProcessId]);
+            theManager.setLastProcess(builder.start());
+            writeProcessOutput(theManager.getLastProcess());
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
+       
     }
 
     private void writeProcessOutput(Process process) throws Exception {
@@ -45,7 +49,14 @@ public class ReaderProcess implements Runnable {
             if (line == null) {
                 break;
             }
-            System.out.println("Father " + line);
+            System.out.println(line);
+            if(line.startsWith("event")){
+                StringTokenizer stok = new StringTokenizer(line, ";");
+                //System.out.print("#" +  stok.nextElement());
+                //System.out.println("|" +  stok.nextElement());
+                theManager.newTagEvent(stok.nextElement().toString(), stok.nextElement().toString());
+                
+            }
         }
         System.out.println("Process terminated!");
     }

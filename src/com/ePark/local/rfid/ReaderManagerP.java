@@ -4,16 +4,14 @@
  */
 package com.ePark.local.rfid;
 
-import CSLibrary.Constants.Operation;
-import CSLibrary.Constants.RFState;
-import CSLibrary.Constants.RadioOperationMode;
-import CSLibrary.Constants.SelectFlags;
 import CSLibrary.HighLevelInterface;
 import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
 import com.ePark.local.task.ReaderProcess;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 /**
@@ -27,9 +25,10 @@ public class ReaderManagerP {
 
     public static final int MAX_PROCESS = 5;
     private Thread[] m_run_process;
-    public static Process[] m_javap;
-    public static int lastProcessId;
-    static PrintWriter outputCommand;
+    private Process[] m_javap;
+    private int lastProcessId;
+    private PrintWriter outputCommand;
+    
     private LinkedHashMap<String, TagEvent> tagList;
     private LinkedHashMap<String, HighLevelInterface> readerList;
 
@@ -39,6 +38,30 @@ public class ReaderManagerP {
         lastProcessId = 0;
         m_run_process = new Thread[MAX_PROCESS];
         m_javap = new Process[MAX_PROCESS];
+        
+         new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Press Enter to stop");
+                BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                String name = null;
+                try {
+                    while (true) {
+                        name = br.readLine();
+                        for (int i = 0; i < lastProcessId; i++) {
+                            // Post command to each process to stop.
+                            outputCommand = new PrintWriter(m_javap[i].getOutputStream());
+                            outputCommand.println("Stop");
+                            outputCommand.close();
+                        }
+                        return;
+                    }
+                } catch (IOException e) {
+                    System.out.println("Error!");
+                    System.exit(1);
+                }
+            }
+        }).start();
     }
 
     /**
@@ -52,7 +75,7 @@ public class ReaderManagerP {
     public void connect(String ip) throws Exception {
         ip = (ip == null ? "192.168.25.203" : ip);
 
-        m_run_process[lastProcessId] = new Thread(new ReaderProcess(ip));        
+        m_run_process[lastProcessId] = new Thread(new ReaderProcess(ip, this));        
         m_run_process[lastProcessId].start();
         m_run_process[lastProcessId].join(500);
 
@@ -69,7 +92,7 @@ public class ReaderManagerP {
      *
      * @param tagid the tagid of the current event
      */
-    void newTagEvent(String tagid) {
+    public void newTagEvent(String s, String tagid) {
         if (tagList.containsKey(tagid)) {
             tagList.get(tagid).setEventStamp(new Timestamp(System.currentTimeMillis()));
         } else {
@@ -79,4 +102,18 @@ public class ReaderManagerP {
         System.out.println(tagList.get(tagid));
         System.out.println("--------------------------------------------------------------------------");
     }
+    
+    public Process getLastProcess(){
+        return m_javap[lastProcessId];
+    }
+    
+    public void setLastProcess(Process p){
+        m_javap[lastProcessId]=p;
+    }
+
+    public int getLastProcessId() {
+        return lastProcessId;
+    }
+    
+    
 }
