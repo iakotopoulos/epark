@@ -18,7 +18,7 @@ public class HighLevelTester {
             ReaderManagerP testManager = new ReaderManagerP();
        //    testManager.connect("192.168.25.203");         
        //    testManager.connect("192.168.25.111");         
-           testManager.Start();
+           testManager.Start(); //This is used to start ReaderManager. It actually attempts connection with IPs loaded from the cofiguration file
            
            
         } catch (Exception ex) {
