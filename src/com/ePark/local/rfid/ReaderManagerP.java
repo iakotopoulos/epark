@@ -6,6 +6,7 @@ package com.ePark.local.rfid;
 
 import CSLibrary.HighLevelInterface;
 import com.ePark.data.io.AppConfiguration;
+import com.ePark.data.io.EparkIO;
 import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
 import com.ePark.local.task.ReaderProcess;
 import java.io.BufferedReader;
