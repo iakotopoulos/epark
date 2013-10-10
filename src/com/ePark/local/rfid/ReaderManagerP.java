@@ -5,6 +5,7 @@
 package com.ePark.local.rfid;
 
 import CSLibrary.HighLevelInterface;
+import com.ePark.io.AppConfiguration;
 import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
 import com.ePark.local.task.ReaderProcess;
 import java.io.BufferedReader;
@@ -13,6 +14,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.util.LinkedHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This is the main class used to manage a reader's connections and events. This
@@ -33,6 +36,8 @@ public class ReaderManagerP {
     private LinkedHashMap<String, HighLevelInterface> readerList;
 
     public ReaderManagerP() {
+        AppConfiguration.loadConfiguration();
+        
         readerList = new LinkedHashMap<>();
         tagList = new LinkedHashMap<>();
         lastProcessId = 0;
@@ -72,16 +77,24 @@ public class ReaderManagerP {
      * IP will be used
      * @throws Exception in case a connection was not possible
      */
-    public void connect(String ip) throws Exception {
-        ip = (ip == null ? "192.168.25.203" : ip);
+    public void connect(String ip) {
+        try {
+            ip = (ip == null ? "192.168.25.203" : ip);
 
-        m_run_process[lastProcessId] = new Thread(new ReaderProcess(ip, this));        
-        m_run_process[lastProcessId].start();
-        m_run_process[lastProcessId].join(500);
+            m_run_process[lastProcessId] = new Thread(new ReaderProcess(ip, this));        
+            m_run_process[lastProcessId].start();
+            m_run_process[lastProcessId].join(500);
 
-        ++lastProcessId;
-
-
+            ++lastProcessId;
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ReaderManagerP.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void Start(){
+        for(String ip: AppConfiguration.getReaders()){
+            connect(ip);
+        }
     }
 
     /**
