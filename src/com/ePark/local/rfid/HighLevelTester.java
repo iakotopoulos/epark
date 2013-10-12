@@ -12,16 +12,17 @@ import java.util.logging.Logger;
  * @author I-A
  */
 public class HighLevelTester {
-    
+
     public static void main(String[] args) {
         try {
-            ReaderManager testManager = new ReaderManager();
-            testManager.connect(null);
-            testManager.connect("192.168.25.111");
-            testManager.Start();
+            ReaderManagerP testManager = new ReaderManagerP();
+       //    testManager.connect("192.168.25.203");         
+       //    testManager.connect("192.168.25.111");         
+           testManager.Start(); //This is used to start ReaderManager. It actually attempts connection with IPs loaded from the cofiguration file
+           
+           
         } catch (Exception ex) {
             Logger.getLogger(HighLevelTester.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
 }
