@@ -15,11 +15,19 @@ public class TagEvent {
     private String tagid;
     private Timestamp eventStamp;
     private int ecount;
+    private float rssi;
 
-    public TagEvent(String tagid, Timestamp eventStamp) {
+    public TagEvent(String tagid, Timestamp eventStamp, float si) {
         this.tagid = tagid;
         this.eventStamp = eventStamp;
         ecount = 1;
+        rssi = si;
+    }
+    
+    public TagEvent(String tagid, Timestamp eventStamp) {
+        this.tagid = tagid;
+        this.eventStamp = eventStamp;
+        ecount = 1;        
     }
 
     public String getTagid() {
@@ -40,10 +48,14 @@ public class TagEvent {
     }
 
     public String toString() {
-        return "tagid: " + tagid + ", last occurence " + eventStamp.toString() + ", (count "+ ecount +")";
+        return "tagid: " + tagid + ", Signal Strength:" + rssi + ", last occurence " + eventStamp.toString() + ", (count " + ecount + ")";
     }
 
     public int getEcount() {
         return ecount;
+    }
+
+    public void setRssi(float rssi) {
+        this.rssi = rssi;
     }
 }

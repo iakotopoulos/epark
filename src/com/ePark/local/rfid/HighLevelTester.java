@@ -17,6 +17,7 @@ public class HighLevelTester {
         try {
             ReaderManager testManager = new ReaderManager();
             testManager.connect(null);
+            testManager.connect("192.168.25.111");
             testManager.Start();
         } catch (Exception ex) {
             Logger.getLogger(HighLevelTester.class.getName()).log(Level.SEVERE, null, ex);
