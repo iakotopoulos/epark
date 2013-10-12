@@ -15,11 +15,19 @@ public class TagEvent {
     private String tagid;
     private Timestamp eventStamp;
     private int ecount;
+    private String type; //IN|OUT
 
     public TagEvent(String tagid, Timestamp eventStamp) {
         this.tagid = tagid;
         this.eventStamp = eventStamp;
         ecount = 1;
+    }
+
+    public TagEvent(String tagid, Timestamp eventStamp, String type) {
+        this.tagid = tagid;
+        this.eventStamp = eventStamp;
+        ecount = 1;
+        this.type = type;
     }
 
     public String getTagid() {
@@ -40,10 +48,20 @@ public class TagEvent {
     }
 
     public String toString() {
-        return "tagid: " + tagid + ", last occurence " + eventStamp.toString() + ", (count "+ ecount +")";
+        return "tagid: " + tagid + ", last occurence " + eventStamp.toString() + ", (count " + ecount + ")";
     }
 
     public int getEcount() {
         return ecount;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+    
+    
 }

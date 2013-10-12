@@ -28,24 +28,23 @@ import java.util.logging.Logger;
 public class ReaderManagerP {
 
     public static final int MAX_PROCESS = 5;
+    public final int MIN_OCCURENCE = 20;
     private Thread[] m_run_process;
     private Process[] m_javap;
     private int lastProcessId;
     private PrintWriter outputCommand;
-    
     private LinkedHashMap<String, TagEvent> tagList;
-    private LinkedHashMap<String, HighLevelInterface> readerList;
 
     public ReaderManagerP() {
         AppConfiguration.loadConfiguration();
-        
-        readerList = new LinkedHashMap<>();
+
+
         tagList = new LinkedHashMap<>();
         lastProcessId = 0;
         m_run_process = new Thread[MAX_PROCESS];
         m_javap = new Process[MAX_PROCESS];
-        
-         new Thread(new Runnable() {
+
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 System.out.println("Press Enter to stop");
@@ -82,7 +81,7 @@ public class ReaderManagerP {
         try {
             ip = (ip == null ? "192.168.25.203" : ip);
 
-            m_run_process[lastProcessId] = new Thread(new ReaderProcess(ip, this));        
+            m_run_process[lastProcessId] = new Thread(new ReaderProcess(ip, this));
             m_run_process[lastProcessId].start();
             m_run_process[lastProcessId].join(500);
 
@@ -91,9 +90,9 @@ public class ReaderManagerP {
             Logger.getLogger(ReaderManagerP.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void Start(){
-        for(String ip: AppConfiguration.getReaders()){
+
+    public void Start() {
+        for (String ip : AppConfiguration.getReaders()) {
             connect(ip);
         }
     }
@@ -113,21 +112,23 @@ public class ReaderManagerP {
             tagList.put(tagid, new TagEvent(tagid, new Timestamp(System.currentTimeMillis())));
         }
 
-        System.out.println(tagList.get(tagid));
-        System.out.println("--------------------------------------------------------------------------");
+        if (tagList.get(tagid).getEcount() > MIN_OCCURENCE) {
+
+            System.out.println(tagList.get(tagid));
+            System.out.println("--------------------------------------------------------------------------");
+            EparkIO.storeArrival(tagList.get(tagid));
+        }
     }
-    
-    public Process getLastProcess(){
+
+    public Process getLastProcess() {
         return m_javap[lastProcessId];
     }
-    
-    public void setLastProcess(Process p){
-        m_javap[lastProcessId]=p;
+
+    public void setLastProcess(Process p) {
+        m_javap[lastProcessId] = p;
     }
 
     public int getLastProcessId() {
         return lastProcessId;
     }
-    
-    
 }
