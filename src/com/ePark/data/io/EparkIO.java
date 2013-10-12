@@ -19,19 +19,20 @@ import java.util.logging.Logger;
  */
 public class EparkIO {
 
-    public static boolean getCategories(TagEvent ev) {
-        String iQuery = "SELECT cid, cname FROM category WHERE parentid=1;";
+    public static boolean storeArrival(TagEvent ev) {
+        String iQuery = "INSERT INTO arrivals(tagid) VALUES(?);";
 
 
 
         ResultSet rs = null;
         try (Connection con = new DBConnection().getConnection();
                 PreparedStatement pst = con.prepareStatement(iQuery);) {
-
-
-            pst.executeQuery();
-
-            return true;
+            
+            pst.setString(1, ev.getTagid());
+            
+            if(pst.executeUpdate()>0)
+                return true;
+            return false;
 
         } catch (SQLException ex) {
             Logger.getLogger(EparkIO.class.getName()).log(Level.SEVERE, null, ex);
