@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 public class EparkIO {
 
     public static boolean storeArrival(TagEvent ev) {
-        String iQuery = "INSERT INTO arrivals(tagid) VALUES(?);";
+        String iQuery = "INSERT INTO arrivals(tagid, intime) VALUES(?, CURRENT_TIMESTAMP);";
 
 
 

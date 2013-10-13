@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ePark.local.task;
+package com.ePark.local.tasks;
 
 import com.ePark.local.rfid.ReaderManagerP;
 import java.io.BufferedInputStream;

@@ -4,6 +4,7 @@
  */
 package com.ePark.local.rfid;
 
+import com.ePark.local.EventManager;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,10 +16,14 @@ public class HighLevelTester {
 
     public static void main(String[] args) {
         try {
-            ReaderManagerP testManager = new ReaderManagerP();
+            EventManager eventManager = new EventManager();
+            
+            ReaderManagerP readerManager = new ReaderManagerP();
+            readerManager.addListener(eventManager);
+            
        //    testManager.connect("192.168.25.203");         
        //    testManager.connect("192.168.25.111");         
-           testManager.Start(); //This is used to start ReaderManager. It actually attempts connection with IPs loaded from the cofiguration file
+           readerManager.Start(); //This is used to start ReaderManager. It actually attempts connection with IPs loaded from the cofiguration file
            
            
         } catch (Exception ex) {

@@ -30,6 +30,7 @@ public class AppConfiguration {
         try {         
          //   ep.load(ReaderManagerP.class.getResourceAsStream("../../../../../config/config.properties"));
             ep.load(new FileInputStream(new java.io.File(".").getCanonicalPath() + "/config/config.properties"));
+            conf.put("rfid_readers", ep.getProperty("rfid_readers"));
             conf.put("db_host", ep.getProperty("db_host"));
             conf.put("db_uname", ep.getProperty("db_uname"));
             conf.put("db_password", ep.getProperty("db_password"));

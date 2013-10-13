@@ -7,13 +7,15 @@ package com.ePark.local.rfid;
 import CSLibrary.HighLevelInterface;
 import com.ePark.data.io.AppConfiguration;
 import com.ePark.data.io.EparkIO;
+import com.ePark.local.events.DeviceListener;
 import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
-import com.ePark.local.task.ReaderProcess;
+import com.ePark.local.tasks.ReaderProcess;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,12 +36,15 @@ public class ReaderManagerP {
     private int lastProcessId;
     private PrintWriter outputCommand;
     private LinkedHashMap<String, TagEvent> tagList;
+    private ArrayList<DeviceListener> listeners;
 
     public ReaderManagerP() {
         AppConfiguration.loadConfiguration();
 
 
         tagList = new LinkedHashMap<>();
+        listeners = new ArrayList<>();
+
         lastProcessId = 0;
         m_run_process = new Thread[MAX_PROCESS];
         m_javap = new Process[MAX_PROCESS];
@@ -64,7 +69,10 @@ public class ReaderManagerP {
                 } catch (IOException e) {
                     System.out.println("Error!");
                     System.exit(1);
+                } finally {
+                    System.exit(0);
                 }
+
             }
         }).start();
     }
@@ -117,6 +125,18 @@ public class ReaderManagerP {
             System.out.println(tagList.get(tagid));
             System.out.println("--------------------------------------------------------------------------");
             EparkIO.storeArrival(tagList.get(tagid));
+
+            notifyListeners();
+        }
+    }
+
+    public void addListener(DeviceListener toAdd) {
+        listeners.add(toAdd);
+    }
+
+    private void notifyListeners() {
+        for (DeviceListener dl : listeners) {
+            dl.readerNotification();
         }
     }
 
