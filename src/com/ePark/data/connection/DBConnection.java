@@ -52,7 +52,6 @@ public class DBConnection {
 
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
         return null;
     }
 
