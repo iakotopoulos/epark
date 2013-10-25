@@ -21,6 +21,11 @@ public class EventManager implements DeviceListener{
     public void readerNotification() {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
+
+    @Override
+    public void magneticNotification() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     
 }

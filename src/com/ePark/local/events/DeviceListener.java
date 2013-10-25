@@ -11,5 +11,7 @@ package com.ePark.local.events;
 public interface DeviceListener {
     
     public void readerNotification();
+    public void magneticNotification();
+    
     
 }
