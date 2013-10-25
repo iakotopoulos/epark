@@ -19,6 +19,8 @@ public class HighLevelTester {
             EventManager eventManager = new EventManager();
 
             ReaderManagerP readerManager = new ReaderManagerP();
+            
+            //Add Listener
             readerManager.addListener(eventManager);
 
             //    testManager.connect("192.168.25.203");         
