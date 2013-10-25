@@ -5,27 +5,24 @@ import CSLibrary.Constants.*;
 import CSLibrary.Structures.*;
 
 public class Settings {
+
     public static int Channel_number = 0;
     public static boolean Lbt = false;
     public static int Link_profile = 2;
     public static int Power = 300;
     public static int Region = RegionCode.UNKNOWN;
     public static boolean FixedChannel = false;
-
     public static boolean custInventory_continuous = true;
     public static boolean custInventory_blocking_mode = false;
     public static TagGroup tagGroup = new TagGroup(Selected.ALL, Session.S0, SessionTarget.A);
     public static int singulation = SingulationAlgorithm.DYNAMICQ;
+    public static FixedQParms fixedQ = new FixedQParms(7, 0, 1, 0);
+    public static DynamicQParms dynamicQ = new DynamicQParms(7, 0, 15, 0, 0, 1);
+    public static DynamicQAdjustParms dynamicQAdj = new DynamicQAdjustParms(7, 0, 15, 0, 0, 1);
+    public static DynamicQThresholdParms dynamicQThres = new DynamicQThresholdParms(7, 0, 15, 0, 0, 1);
 
-    public static FixedQParms fixedQ = new FixedQParms(7,0,1,0);
-    public static DynamicQParms dynamicQ = new DynamicQParms(7,0,15,0,0,1);
-    public static DynamicQAdjustParms dynamicQAdj = new DynamicQAdjustParms(7,0,15,0,0,1);
-    public static DynamicQThresholdParms dynamicQThres = new DynamicQThresholdParms(7,0,15,0,0,1);
-
-    public static SingulationAlgorithmParms GetSingulationAlg()
-    {
-        switch(singulation)
-        {
+    public static SingulationAlgorithmParms GetSingulationAlg() {
+        switch (singulation) {
             case SingulationAlgorithm.DYNAMICQ:
                 return dynamicQ;
             case SingulationAlgorithm.DYNAMICQ_ADJUST:
@@ -39,10 +36,8 @@ public class Settings {
         }
     }
 
-    public static boolean Save()
-    {
-        try
-        {
+    public static boolean Save() {
+        try {
             FileWriter fstream = new FileWriter("myset.txt");
             BufferedWriter out = new BufferedWriter(fstream);
 
@@ -126,20 +121,16 @@ public class Settings {
             out.write(Integer.toString(dynamicQThres.toggleTarget));
 
             out.close();
-        }
-        catch(IOException ex)
-        {
+        } catch (IOException ex) {
             return false;
         }
         return true;
     }
 
-    public static void Load()
-    {
-        try
-        {
-            FileInputStream  fstream = new FileInputStream ("myset.txt");
-            DataInputStream  in = new DataInputStream (fstream);
+    public static void Load() {
+        try {
+            FileInputStream fstream = new FileInputStream("myset.txt");
+            DataInputStream in = new DataInputStream(fstream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
             // load general options
@@ -189,27 +180,19 @@ public class Settings {
             dynamicQThres.toggleTarget = Integer.parseInt(br.readLine());
 
             in.close();
-        }
-        catch(IOException ex)
-        {
+        } catch (IOException ex) {
         }
     }
 
-    private static int booleantoInt(boolean in)
-    {
+    private static int booleantoInt(boolean in) {
         return in ? 1 : 0;
     }
 
-    private static boolean inttoBoolean(int in)
-    {
-        if (in == 0)
-        {
+    private static boolean inttoBoolean(int in) {
+        if (in == 0) {
             return false;
-        }
-        else
-        {
+        } else {
             return true;
         }
     }
 }
-

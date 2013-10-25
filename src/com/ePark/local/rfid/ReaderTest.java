@@ -4,7 +4,6 @@
  */
 package com.ePark.local.rfid;
 
-
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -22,8 +21,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This is a low level connection tester class. It was created in order to test the 
- * direct connection with a reader with the use of a socket. The high level API is recommended
+ * This is a low level connection tester class. It was created in order to test
+ * the direct connection with a reader with the use of a socket. The high level
+ * API is recommended
+ *
  * @author I-A
  */
 public class ReaderTest {
@@ -73,7 +74,7 @@ public class ReaderTest {
             //open uport (3041)
             clientSocket = new DatagramSocket();
 
-           
+
             //open cport (1516)
             TCPCtrlSocket = new Socket(IPAddress, 1516);
             TCPCtrlOut = new DataOutputStream(TCPCtrlSocket.getOutputStream());
@@ -95,7 +96,7 @@ public class ReaderTest {
                     break;
                 }
             }
-            
+
             Thread.sleep(2000);
 
             //Enable TCP Notifications
@@ -107,7 +108,7 @@ public class ReaderTest {
                     break;
                 }
             }
-            
+
             //Send Abort command
             clearReadBuffer(TCPDataIn);
             TCPDataOut.write(hexStringToByteArray("4003000000000000"));
@@ -118,7 +119,7 @@ public class ReaderTest {
                     break;
                 }
             }
-            
+
 
             ///////////////////////////////////////////////////////////////////////
 

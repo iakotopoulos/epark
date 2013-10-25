@@ -27,11 +27,12 @@ public class EparkIO {
         ResultSet rs = null;
         try (Connection con = new DBConnection().getConnection();
                 PreparedStatement pst = con.prepareStatement(iQuery);) {
-            
+
             pst.setString(1, ev.getTagid());
-            
-            if(pst.executeUpdate()>0)
+
+            if (pst.executeUpdate() > 0) {
                 return true;
+            }
             return false;
 
         } catch (SQLException ex) {

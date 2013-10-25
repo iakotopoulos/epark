@@ -12,6 +12,5 @@ public interface DeviceListener {
     
     public void readerNotification();
     public void magneticNotification();
-    
-    
+        
 }

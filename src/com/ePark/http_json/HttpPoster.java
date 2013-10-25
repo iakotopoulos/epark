@@ -18,47 +18,45 @@ import net.sf.json.JSONObject;
  */
 public class HttpPoster {
 
-   
-    private static String url="";
+    private static String url = "";
     private static String urlParameters;
-    
-    public HttpPoster(){
+
+    public HttpPoster() {
         System.out.println("Creating HttpPoster object");
     }
-    
-    
+
     private void formatUrl(JSONObject jsonIn) throws Exception {
         StringBuilder paramsBuild = new StringBuilder();
-        switch (jsonIn.get("message_type").toString()){
-                case "IN":
-                    paramsBuild.append("message_type=IN");
-                    paramsBuild.append("&version="+jsonIn.get("version"));
-                    paramsBuild.append("&parking_code="+jsonIn.get("parking_code"));
-                    paramsBuild.append("&tag_identifier="+jsonIn.get("tag_identifier"));
-                    paramsBuild.append("&time_in="+jsonIn.get("time_in"));
-                    paramsBuild.append("&reader_code="+jsonIn.get("reader_code"));
-                    break;
-                case "OUT":
-                    paramsBuild.append("message_type=OUT");
-                    paramsBuild.append("&version="+jsonIn.get("version"));
-                    paramsBuild.append("&ticket_number="+jsonIn.get("ticket_number"));
-                    paramsBuild.append("&parking_code="+jsonIn.get("parking_code"));
-                    paramsBuild.append("&tag_data="+jsonIn.get("tag_data"));
-                    paramsBuild.append("&time_out="+jsonIn.get("time_out"));
-                    paramsBuild.append("&reader_code="+jsonIn.get("reader_code"));
-                    paramsBuild.append("&tag_identifier="+jsonIn.get("tag_identifier"));
-                    break;
-                default:
-                     throw new MessageTypeException("Malformed message type");
-           
+        switch (jsonIn.get("message_type").toString()) {
+            case "IN":
+                paramsBuild.append("message_type=IN");
+                paramsBuild.append("&version=" + jsonIn.get("version"));
+                paramsBuild.append("&parking_code=" + jsonIn.get("parking_code"));
+                paramsBuild.append("&tag_identifier=" + jsonIn.get("tag_identifier"));
+                paramsBuild.append("&time_in=" + jsonIn.get("time_in"));
+                paramsBuild.append("&reader_code=" + jsonIn.get("reader_code"));
+                break;
+            case "OUT":
+                paramsBuild.append("message_type=OUT");
+                paramsBuild.append("&version=" + jsonIn.get("version"));
+                paramsBuild.append("&ticket_number=" + jsonIn.get("ticket_number"));
+                paramsBuild.append("&parking_code=" + jsonIn.get("parking_code"));
+                paramsBuild.append("&tag_data=" + jsonIn.get("tag_data"));
+                paramsBuild.append("&time_out=" + jsonIn.get("time_out"));
+                paramsBuild.append("&reader_code=" + jsonIn.get("reader_code"));
+                paramsBuild.append("&tag_identifier=" + jsonIn.get("tag_identifier"));
+                break;
+            default:
+                throw new MessageTypeException("Malformed message type");
+
         }
-           urlParameters = paramsBuild.toString();        
+        urlParameters = paramsBuild.toString();
     }
-    
-    public JSONObject postEvent (JSONObject jsonIn) throws Exception {
+
+    public JSONObject postEvent(JSONObject jsonIn) throws Exception {
         formatUrl(jsonIn);
         url = Config.url;
-        switch (jsonIn.get("message_type").toString()){
+        switch (jsonIn.get("message_type").toString()) {
             case "IN":
                 url = url + Config.arrivalOperation;
                 break;
@@ -66,7 +64,7 @@ public class HttpPoster {
                 url = url + Config.departureOperation;
                 break;
             default:
-                 throw new MessageTypeException("Malformed message type");
+                throw new MessageTypeException("Malformed message type");
         }
         System.out.println("URL is: " + url);
         URL obj = new URL(url);
@@ -86,12 +84,12 @@ public class HttpPoster {
         System.out.println("Post parameters : " + urlParameters);
         System.out.println("Response Code : " + responseCode);
         BufferedReader in;
-        if (responseCode==200){
+        if (responseCode == 200) {
             in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
+                    new InputStreamReader(con.getInputStream()));
         } else {
             in = new BufferedReader(
-                new InputStreamReader(con.getErrorStream()));
+                    new InputStreamReader(con.getErrorStream()));
         }
         String inputLine;
         StringBuilder response = new StringBuilder();
@@ -101,10 +99,8 @@ public class HttpPoster {
         }
         in.close();
 
-          
+
         JSONObject jsonResponse = JSONObject.fromObject(response.toString());
-        return jsonResponse; 
+        return jsonResponse;
     }
-    
-    
 }

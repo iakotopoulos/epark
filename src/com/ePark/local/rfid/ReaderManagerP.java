@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 /**
  * This is the main class used to manage a reader's connections and events. This
  * class will either be refactored to conform a list of readers or another class
- * should be added to handle all the local readers
+ * should be added to handle all the local readers 
  *
  * @author I-A
  */

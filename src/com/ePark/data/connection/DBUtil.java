@@ -58,5 +58,4 @@ public class DBUtil {
             Logger.getLogger(DBUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
 }
