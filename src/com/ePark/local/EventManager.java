@@ -19,7 +19,6 @@ public class EventManager implements DeviceListener{
 
     @Override
     public void readerNotification() {
-        
         throw new UnsupportedOperationException("Not supported yet."); 
     }
 
