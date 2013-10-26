@@ -18,7 +18,7 @@ public class HighLevelTester {
         try {
             EventManager eventManager = new EventManager();
 
-            ReaderManagerP readerManager = new ReaderManagerP();
+            ReaderManager readerManager = new ReaderManager();
             
             //Add Listener
             readerManager.addListener(eventManager);

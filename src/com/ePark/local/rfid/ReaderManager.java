@@ -8,6 +8,7 @@ import CSLibrary.HighLevelInterface;
 import com.ePark.data.io.AppConfiguration;
 import com.ePark.data.io.EparkIO;
 import com.ePark.local.events.DeviceListener;
+import com.ePark.local.rfid.epark.local.rfid.data.Reader;
 import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
 import com.ePark.local.tasks.ReaderProcess;
 import java.io.BufferedReader;
@@ -23,11 +24,11 @@ import java.util.logging.Logger;
 /**
  * This is the main class used to manage a reader's connections and events. This
  * class will either be refactored to conform a list of readers or another class
- * should be added to handle all the local readers 
+ * should be added to handle all the local readers
  *
  * @author I-A
  */
-public class ReaderManagerP {
+public class ReaderManager {
 
     public static final int MAX_PROCESS = 5;
     public final int MIN_OCCURENCE = 20;
@@ -36,19 +37,22 @@ public class ReaderManagerP {
     private int lastProcessId;
     private PrintWriter outputCommand;
     private LinkedHashMap<String, TagEvent> tagList;
+    private LinkedHashMap<String, Reader> readerList;
     private ArrayList<DeviceListener> listeners;
 
-    public ReaderManagerP() {
+    public ReaderManager() {
         AppConfiguration.loadConfiguration();
 
 
         tagList = new LinkedHashMap<>();
+        readerList = new LinkedHashMap<>();
         listeners = new ArrayList<>();
 
         lastProcessId = 0;
         m_run_process = new Thread[MAX_PROCESS];
         m_javap = new Process[MAX_PROCESS];
 
+        //Start a thread waiting for shutdown command (Stop)
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -95,12 +99,13 @@ public class ReaderManagerP {
 
             ++lastProcessId;
         } catch (InterruptedException ex) {
-            Logger.getLogger(ReaderManagerP.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ReaderManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public void Start() {
-        for (String ip : AppConfiguration.getReaders()) {
+        readerList = AppConfiguration.getReaders();
+        for (String ip : readerList.keySet()) {
             connect(ip);
         }
     }

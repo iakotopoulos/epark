@@ -4,10 +4,12 @@
  */
 package com.ePark.data.io;
 
+import com.ePark.local.rfid.epark.local.rfid.data.Reader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -30,7 +32,8 @@ public class AppConfiguration {
         try {
             //   ep.load(ReaderManagerP.class.getResourceAsStream("../../../../../config/config.properties"));
             ep.load(new FileInputStream(new java.io.File(".").getCanonicalPath() + "/config/config.properties"));
-            conf.put("rfid_readers", ep.getProperty("rfid_readers"));
+            conf.put("rfid_readers_in", ep.getProperty("rfid_readers_in"));
+            conf.put("rfid_readers_out", ep.getProperty("rfid_readers_out"));
             conf.put("db_host", ep.getProperty("db_host"));
             conf.put("db_uname", ep.getProperty("db_uname"));
             conf.put("db_password", ep.getProperty("db_password"));
@@ -43,15 +46,24 @@ public class AppConfiguration {
         return conf;
     }
 
-    public static ArrayList<String> getReaders() {
-        ArrayList<String> iplist = new ArrayList<>();
+    public static LinkedHashMap<String, Reader> getReaders() {
+        LinkedHashMap<String, Reader> iplist = new LinkedHashMap<>();
 
         if (conf != null) {
-            String ipString = conf.get("rfid_readers");
+            String ipString = conf.get("rfid_readers_in");
             StringTokenizer stok = new StringTokenizer(ipString, ";");
             while (stok.hasMoreTokens()) {
-                iplist.add(stok.nextToken());
+                String nip = stok.nextToken();
+                iplist.put(nip, new Reader(nip, "in"));
             }
+
+            ipString = conf.get("rfid_readers_out");
+            stok = new StringTokenizer(ipString, ";");
+            while (stok.hasMoreTokens()) {
+                String nip = stok.nextToken();
+                iplist.put(nip, new Reader(nip, "out"));
+            }
+
         } else {
             System.out.println("No configuration loaded");
         }
