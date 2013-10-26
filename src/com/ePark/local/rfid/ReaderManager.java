@@ -129,9 +129,8 @@ public class ReaderManager {
 
             System.out.println(tagList.get(tagid));
             System.out.println("--------------------------------------------------------------------------");
-            EparkIO.storeArrival(tagList.get(tagid));
 
-            notifyListeners();
+            notifyListeners(tagList.get(tagid));
         }
     }
 
@@ -139,9 +138,9 @@ public class ReaderManager {
         listeners.add(toAdd);
     }
 
-    private void notifyListeners() {
+    private void notifyListeners(TagEvent ev) {
         for (DeviceListener dl : listeners) {
-            dl.readerNotification();
+            dl.readerNotification(ev);
         }
     }
 
