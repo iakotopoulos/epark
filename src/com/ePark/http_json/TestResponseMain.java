@@ -4,6 +4,11 @@
  */
 package com.ePark.http_json;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.sf.json.JSONObject;
 
 /**
@@ -16,67 +21,43 @@ public class TestResponseMain {
    private static HttpPoster httpPost;
    
    public static void main( String[] args ){
-               
-       httpPost = new HttpPoster();
-       
-        JSONObject jsonArrival_1 = new JSONObject();
-        JSONObject jsonArrival_2 = new JSONObject();
-        JSONObject jsonDeparture_1 = new JSONObject();
-        JSONObject jsonDeparture_2 = new JSONObject();
-
-        // car wih tag id 1234567890 comes in
-        jsonArrival_1.accumulate("message_type", "IN");
-        jsonArrival_1.accumulate("version", 1);
-        jsonArrival_1.accumulate("parking_code", "PK001");
-        jsonArrival_1.accumulate("tag_identifier", 1234567890);
-        jsonArrival_1.accumulate("time_in", "20130923210100");
-        jsonArrival_1.accumulate("reader_code", 123);
-
-        // car wih tag id 1234567891 comes in
-        jsonArrival_2.accumulate("message_type", "IN");
-        jsonArrival_2.accumulate("version", 1);
-        jsonArrival_2.accumulate("parking_code", "PK001");
-        jsonArrival_2.accumulate("tag_identifier", 1234567891);
-        jsonArrival_2.accumulate("time_in", "20130923210100");
-        jsonArrival_2.accumulate("reader_code", 123);
-
-        // car with tag id 1234567891 departs
-        jsonDeparture_2.accumulate("message_type", "OUT");
-        jsonDeparture_2.accumulate("version", 1);
-        jsonDeparture_2.accumulate("ticket_number", 0);
-        jsonDeparture_2.accumulate("parking_code", "PK001");
-        jsonDeparture_2.accumulate("tag_data", 123);
-        jsonDeparture_2.accumulate("time_out", "20130923210100");
-        jsonDeparture_2.accumulate("reader_code", 123);
-        jsonDeparture_2.accumulate("tag_identifier", 1234567891);
-
-        // car with tag id 1234567890 departs
-        jsonDeparture_1.accumulate("message_type", "OUT");
-        jsonDeparture_1.accumulate("version", 1);
-        jsonDeparture_1.accumulate("ticket_number", 0);
-        jsonDeparture_1.accumulate("parking_code", "PK001");
-        jsonDeparture_1.accumulate("tag_data", 123);
-        jsonDeparture_1.accumulate("time_out", "20130923210100");
-        jsonDeparture_1.accumulate("reader_code", 123);
-        jsonDeparture_1.accumulate("tag_identifier", 1234567890);
-
-
 
         try {
-
-            JSONObject jsonResponseArrival_1 = httpPost.postEvent(jsonArrival_1);
-            System.out.println("Json Arrival Response: " + jsonResponseArrival_1.toString());
-            JSONObject jsonResponseArrival_2 = httpPost.postEvent(jsonArrival_2);
-            System.out.println("Json Arrival Response: " + jsonResponseArrival_2.toString());
-            JSONObject jsonResponseDeparture_2 = httpPost.postEvent(jsonDeparture_2);
-            System.out.println("Json Departure Response: " + jsonResponseDeparture_2.toString());
-
-            JSONObject jsonResponseDeparture_1 = httpPost.postEvent(jsonDeparture_1);
-            System.out.println("Json Departure Response: " + jsonResponseDeparture_1.toString());
-        } catch (Exception exc) {
-            exc.printStackTrace();
-            System.out.println("Error in submitting event");
-        }
+                   
+           httpPost = new HttpPoster();
+           
+           
+           /*** ARRIVALS OF VEHICLES WITH TAG IDs 1234567892 and 1234567893 ***/
+           // vehichle with tag_identifier 1234567892 arrives
+           JSONObject arrival1 = httpPost.postArrival("IN", 1, "PK001", 1234567892, "123", "20130923210100", 123);
+           System.out.println("ARRIVAL 1: " + arrival1.toString());
+           // vehichle with tag_identifier 1234567893 arrives
+           JSONObject arrival2 = httpPost.postArrival("IN", 1, "PK001", 1234567893, "123", "20130923210100", 123);
+           System.out.println("ARRIVAL 2: " + arrival2.toString());
+           
+           /* DEPARTURES OF VEHICLES WITH TAG IDs 1234567892 and 1234567893 */
+            // vehichle with tag_identifier 1234567893 departs
+           JSONObject departure1 = httpPost.postDeparture("OUT", 1, "PK001", 1234567893, "123", "20130923210100", 123, 0);
+           System.out.println("DEPARTURE 1: " + departure1.toString());
+           // vehichle with tag_identifier 1234567892 departs
+           JSONObject departure2 = httpPost.postDeparture("OUT", 1, "PK001", 1234567892, "123", "20130923210100", 123, 0);
+           System.out.println("DEPARTURE 2: " + departure2.toString());
+           
+           /**** OFFLINE MESSAGE TESTING ******/
+           /* simulating offline message for arrival of 1234567890 */
+           JSONObject off_arrival = httpPost.postArrival("INOFFLINE", 1, "PK001", 1234567892, "123", "20130923210100", 123);
+           System.out.println("OFFLINE ARRIVAL: " + off_arrival.toString());
+           
+           
+        } catch (SocketTimeoutException ex) {
+            Logger.getLogger(TestResponseMain.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MessageTypeException ex) {
+           Logger.getLogger(TestResponseMain.class.getName()).log(Level.SEVERE, null, ex);
+       } catch (MalformedURLException ex) {
+           Logger.getLogger(TestResponseMain.class.getName()).log(Level.SEVERE, null, ex);
+       } catch (IOException ex) {
+           Logger.getLogger(TestResponseMain.class.getName()).log(Level.SEVERE, null, ex);
+       }
 
     }
 }

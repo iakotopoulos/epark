@@ -30,19 +30,20 @@ public class HttpPoster {
     private int readTimeout = Config.readTimeout;
 
 
-
+    /*
     public HttpPoster() {
         System.out.println("Creating HttpPoster object");
         System.out.println("Timeout is: " + connectTimeout);
     }
-
+    */
 
     private void formatUrl(JSONObject jsonIn) throws MessageTypeException  {
 
         StringBuilder paramsBuild = new StringBuilder();
         switch (jsonIn.get("message_type").toString()) {
             case "IN":
-                paramsBuild.append("message_type=IN");
+            case "INOFFLINE":
+                paramsBuild.append("message_type=" + jsonIn.get("message_type"));
                 paramsBuild.append("&version=" + jsonIn.get("version"));
                 paramsBuild.append("&parking_code=" + jsonIn.get("parking_code"));
                 paramsBuild.append("&tag_identifier=" + jsonIn.get("tag_identifier"));
@@ -50,7 +51,8 @@ public class HttpPoster {
                 paramsBuild.append("&reader_code=" + jsonIn.get("reader_code"));
                 break;
             case "OUT":
-                paramsBuild.append("message_type=OUT");
+            case "OUTOFFLINE":
+                paramsBuild.append("message_type=" + jsonIn.get("message_type"));
                 paramsBuild.append("&version=" + jsonIn.get("version"));
                 paramsBuild.append("&ticket_number=" + jsonIn.get("ticket_number"));
                 paramsBuild.append("&parking_code=" + jsonIn.get("parking_code"));
@@ -67,16 +69,18 @@ public class HttpPoster {
     }
 
 
-    public JSONObject postEvent(JSONObject jsonIn) throws java.net.SocketTimeoutException, MessageTypeException,
+    private JSONObject postEvent(JSONObject jsonIn) throws java.net.SocketTimeoutException, MessageTypeException,
             java.net.MalformedURLException, IOException {
 
         formatUrl(jsonIn);
         url = Config.url;
         switch (jsonIn.get("message_type").toString()) {
             case "IN":
+            case "INOFFLINE":
                 url = url + Config.arrivalOperation;
                 break;
             case "OUT":
+            case "OUTOFFLINE":
                 url = url + Config.departureOperation;
                 break;
             default:
@@ -99,8 +103,8 @@ public class HttpPoster {
 
             responseCode = con.getResponseCode();
         
-        System.out.println("\nSending 'POST' request to URL : " + url);
-        System.out.println("Post parameters : " + urlParameters);
+        //System.out.println("\nSending 'POST' request to URL : " + url);
+        //System.out.println("Post parameters : " + urlParameters);
         System.out.println("Response Code : " + responseCode);
         BufferedReader in;
         if (responseCode == 200) {
@@ -122,4 +126,41 @@ public class HttpPoster {
         JSONObject jsonResponse = JSONObject.fromObject(response.toString());
         return jsonResponse;
     }
+    
+    public JSONObject postArrival(String message_type, int version, 
+            String parking_code, int tag_identifier, String tag_data, String time_in, int reader_code) throws java.net.SocketTimeoutException, 
+            MessageTypeException, java.net.MalformedURLException, java.io.IOException {
+        
+        JSONObject jsonArrival = new JSONObject();
+        jsonArrival.accumulate("message_type", message_type);
+        jsonArrival.accumulate("version", version);
+        jsonArrival.accumulate("parking_code", parking_code);
+        jsonArrival.accumulate("tag_identifier", tag_identifier);
+        jsonArrival.accumulate("tag_data", tag_data);
+        jsonArrival.accumulate("time_in", time_in);
+        jsonArrival.accumulate("reader_code", reader_code);
+        
+        
+        return postEvent(jsonArrival);
+        
+    }
+    
+    public JSONObject postDeparture(String message_type, int version, 
+            String parking_code, int tag_identifier, String tag_data, String time_out, int reader_code, int ticket_number) throws java.net.SocketTimeoutException, 
+            MessageTypeException, java.net.MalformedURLException, java.io.IOException {
+        
+        JSONObject jsonDeparture = new JSONObject();
+        jsonDeparture.accumulate("message_type", message_type);
+        jsonDeparture.accumulate("version", version);
+        jsonDeparture.accumulate("parking_code", parking_code);
+        jsonDeparture.accumulate("tag_identifier", tag_identifier);
+        jsonDeparture.accumulate("tag_data", tag_data);
+        jsonDeparture.accumulate("time_out", time_out);
+        jsonDeparture.accumulate("reader_code", reader_code);
+        jsonDeparture.accumulate("ticket_number", ticket_number);
+        
+        return postEvent(jsonDeparture);
+        
+    }
+    
 }
