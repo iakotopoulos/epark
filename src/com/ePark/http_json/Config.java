@@ -9,7 +9,11 @@ package com.ePark.http_json;
  * @author pantelis
  */
 public class Config {
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> origin/master
     public static final String url = "http://parking.itenasolutions.com:8080/json/reply/";
     public static final String arrivalOperation = "VehicleArrival";
     public static final String departureOperation = "VehicleDeparture";

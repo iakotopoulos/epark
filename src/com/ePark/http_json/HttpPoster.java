@@ -21,19 +21,28 @@ import net.sf.json.JSONObject;
  */
 public class HttpPoster {
 
+<<<<<<< HEAD
     private String url = "";
     private String urlParameters;
     private int responseCode = 0;
     private HttpURLConnection con = null;
     private int connectTimeout = Config.connectTimeout;
     private int readTimeout = Config.readTimeout;
+=======
+    private static String url = "";
+    private static String urlParameters;
+>>>>>>> origin/master
 
     public HttpPoster() {
         System.out.println("Creating HttpPoster object");
         System.out.println("Timeout is: " + connectTimeout);
     }
 
+<<<<<<< HEAD
     private void formatUrl(JSONObject jsonIn) throws MessageTypeException  {
+=======
+    private void formatUrl(JSONObject jsonIn) throws Exception {
+>>>>>>> origin/master
         StringBuilder paramsBuild = new StringBuilder();
         switch (jsonIn.get("message_type").toString()) {
             case "IN":
@@ -61,8 +70,12 @@ public class HttpPoster {
         urlParameters = paramsBuild.toString();
     }
 
+<<<<<<< HEAD
     public JSONObject postEvent(JSONObject jsonIn) throws java.net.SocketTimeoutException, MessageTypeException,
             java.net.MalformedURLException, IOException {
+=======
+    public JSONObject postEvent(JSONObject jsonIn) throws Exception {
+>>>>>>> origin/master
         formatUrl(jsonIn);
         url = Config.url;
         switch (jsonIn.get("message_type").toString()) {
@@ -111,6 +124,10 @@ public class HttpPoster {
         }
         in.close();
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
         JSONObject jsonResponse = JSONObject.fromObject(response.toString());
         return jsonResponse;
     }

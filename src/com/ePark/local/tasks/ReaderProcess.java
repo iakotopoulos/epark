@@ -4,7 +4,7 @@
  */
 package com.ePark.local.tasks;
 
-import com.ePark.local.rfid.ReaderManagerP;
+import com.ePark.local.rfid.ReaderManager;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -16,10 +16,10 @@ import java.util.StringTokenizer;
  */
 public class ReaderProcess implements Runnable {
 
-    private ReaderManagerP theManager;
+    private ReaderManager theManager;
     private String ip;
 
-    public ReaderProcess(String ip, ReaderManagerP tm) {
+    public ReaderProcess(String ip, ReaderManager tm) {
         this.ip = ip;
         this.theManager = tm;
     }
@@ -29,7 +29,7 @@ public class ReaderProcess implements Runnable {
         ProcessBuilder builder = new ProcessBuilder("java", "-jar", "EparkTask.jar", "-ip", ip);
 
         try {
-            if (theManager.getLastProcessId() > ReaderManagerP.MAX_PROCESS) {
+            if (theManager.getLastProcessId() > ReaderManager.MAX_PROCESS) {
                 System.out.println("Error: Exceed the maximum number of allowable process.");
                 return;
             }
@@ -38,7 +38,7 @@ public class ReaderProcess implements Runnable {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-       
+
     }
 
     private void writeProcessOutput(Process process) throws Exception {
@@ -48,14 +48,12 @@ public class ReaderProcess implements Runnable {
             String line = reader.readLine();
             if (line == null) {
                 break;
-            }
-            System.out.println(line);
-            if(line.startsWith("event")){
+            }            
+            if (line.startsWith("event")) {
                 StringTokenizer stok = new StringTokenizer(line, ";");
                 //System.out.print("#" +  stok.nextElement());
                 //System.out.println("|" +  stok.nextElement());
                 theManager.newTagEvent(stok.nextElement().toString(), stok.nextElement().toString());
-                
             }
         }
         System.out.println("Process terminated!");

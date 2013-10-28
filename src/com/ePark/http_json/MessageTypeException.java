@@ -9,9 +9,8 @@ package com.ePark.http_json;
  * @author pkaramol
  */
 public class MessageTypeException extends Exception {
-    
-    public MessageTypeException(String message){
+
+    public MessageTypeException(String message) {
         super(message);
     }
-    
 }

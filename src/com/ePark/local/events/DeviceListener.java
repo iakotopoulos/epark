@@ -4,14 +4,15 @@
  */
 package com.ePark.local.events;
 
+import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
+
 /**
  *
  * @author I-A
  */
 public interface DeviceListener {
     
-    public void readerNotification();
+    public void readerNotification(TagEvent ev);
     public void magneticNotification();
-    
-    
+        
 }

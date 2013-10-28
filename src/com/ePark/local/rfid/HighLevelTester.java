@@ -17,15 +17,17 @@ public class HighLevelTester {
     public static void main(String[] args) {
         try {
             EventManager eventManager = new EventManager();
+
+            ReaderManager readerManager = new ReaderManager();
             
-            ReaderManagerP readerManager = new ReaderManagerP();
+            //Add Listener
             readerManager.addListener(eventManager);
-            
-       //    testManager.connect("192.168.25.203");         
-       //    testManager.connect("192.168.25.111");         
-           readerManager.Start(); //This is used to start ReaderManager. It actually attempts connection with IPs loaded from the cofiguration file
-           
-           
+
+            //    testManager.connect("192.168.25.203");         
+            //    testManager.connect("192.168.25.111");         
+            readerManager.Start(); //This is used to start ReaderManager. It actually attempts connection with IPs loaded from the cofiguration file
+
+
         } catch (Exception ex) {
             Logger.getLogger(HighLevelTester.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -12,7 +12,7 @@ public class Reader {
 
     private String ip;
     private String location;
-    private String role;
+    private String role; //in|out
 
     public Reader(String ip, String role) {
         this.ip = ip;
