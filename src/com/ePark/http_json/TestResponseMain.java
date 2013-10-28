@@ -22,11 +22,11 @@ public class TestResponseMain {
        JSONObject jsonDeparture_1 = new JSONObject();
        JSONObject jsonDeparture_2 = new JSONObject();
        
-       // car wih tag id 1234567890 comes in
+       // car wih tag id 1234567892 comes in
        jsonArrival_1.accumulate("message_type", "IN");
        jsonArrival_1.accumulate("version", 1);
        jsonArrival_1.accumulate("parking_code", "PK001");
-       jsonArrival_1.accumulate("tag_identifier", 1234567890);
+       jsonArrival_1.accumulate("tag_identifier", 1234567892);
        jsonArrival_1.accumulate("time_in", "20130923210100");
        jsonArrival_1.accumulate("reader_code", 123);
        
@@ -48,7 +48,7 @@ public class TestResponseMain {
        jsonDeparture_2.accumulate("reader_code", 123);
        jsonDeparture_2.accumulate("tag_identifier", 1234567891);
        
-         // car with tag id 1234567890 departs
+         // car with tag id 1234567892 departs
        jsonDeparture_1.accumulate("message_type", "OUT");
        jsonDeparture_1.accumulate("version", 1);
        jsonDeparture_1.accumulate("ticket_number", 0);
@@ -56,7 +56,7 @@ public class TestResponseMain {
        jsonDeparture_1.accumulate("tag_data", 123);
        jsonDeparture_1.accumulate("time_out", "20130923210100");
        jsonDeparture_1.accumulate("reader_code", 123);
-       jsonDeparture_1.accumulate("tag_identifier", 1234567890);
+       jsonDeparture_1.accumulate("tag_identifier", 1234567892);
        
         
         try {
