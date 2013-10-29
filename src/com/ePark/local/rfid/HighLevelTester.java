@@ -19,7 +19,7 @@ public class HighLevelTester {
             EventManager eventManager = new EventManager();
 
 
-            eventManager.Start(); //This is used to start EventManager. He is responsible for starting any other managers (readers, amagnetic etc)
+            eventManager.Start(); //This is used to start EventManager. He is responsible for starting any other managers (readers, magnetic etc)
 
 
         } catch (Exception ex) {

@@ -8,7 +8,6 @@ import com.ePark.data.io.EparkIO;
 import com.ePark.local.events.DeviceListener;
 import com.ePark.local.rfid.ReaderManager;
 import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
-import java.util.ArrayList;
 
 /**
  *
@@ -33,7 +32,7 @@ public class EventManager implements DeviceListener {
     @Override
     public void readerNotification(TagEvent ev) {
         //Temporarly use this as an entrance event notification. next step is to use a magnetic notification
-        if(ev.getTheReader().isEntrance()){
+        if (ev.getTheReader().isEntrance()) {
             EparkIO.storeArrival(ev);
         }
     }
