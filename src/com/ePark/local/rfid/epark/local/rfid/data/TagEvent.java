@@ -12,14 +12,16 @@ import java.sql.Timestamp;
  */
 public class TagEvent {
 
+    private Reader theReader;
     private String tagid;
     private Timestamp eventStamp;
     private int ecount;
     private String type; //IN|OUT
 
-    public TagEvent(String tagid, Timestamp eventStamp) {
+    public TagEvent(String tagid, Timestamp eventStamp, Reader r) {
         this.tagid = tagid;
         this.eventStamp = eventStamp;
+        theReader = r;
         ecount = 1;
     }
 
@@ -42,6 +44,10 @@ public class TagEvent {
         return eventStamp;
     }
 
+    /**
+     * Update the timestamp and increase the counter
+     * @param eventStamp the timestamp of the event
+     */
     public void setEventStamp(Timestamp eventStamp) {
         this.eventStamp = eventStamp;
         ecount++;
@@ -61,6 +67,10 @@ public class TagEvent {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Reader getTheReader() {
+        return theReader;
     }
     
     

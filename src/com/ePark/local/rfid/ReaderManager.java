@@ -37,6 +37,7 @@ public class ReaderManager {
     private int lastProcessId;
     private PrintWriter outputCommand;
     private LinkedHashMap<String, TagEvent> tagList;
+    //The list of connected readers. The list is populated on start and is based on the reader IP
     private LinkedHashMap<String, Reader> readerList;
     private ArrayList<DeviceListener> listeners;
 
@@ -116,13 +117,15 @@ public class ReaderManager {
      * timestamp of the event is added. If it is the first time a new event is
      * added with the current timestamp
      *
+     * @param r the reader that will produce the event
+     * @param s
      * @param tagid the tagid of the current event
      */
-    public void newTagEvent(String s, String tagid) {
+    public void newTagEvent(Reader r, String s, String tagid) {
         if (tagList.containsKey(tagid)) {
             tagList.get(tagid).setEventStamp(new Timestamp(System.currentTimeMillis()));
         } else {
-            tagList.put(tagid, new TagEvent(tagid, new Timestamp(System.currentTimeMillis())));
+            tagList.put(tagid, new TagEvent(tagid, new Timestamp(System.currentTimeMillis()), r));
         }
 
         if (tagList.get(tagid).getEcount() > MIN_OCCURENCE) {
@@ -154,5 +157,9 @@ public class ReaderManager {
 
     public int getLastProcessId() {
         return lastProcessId;
+    }
+
+    public Reader gerReader(String readerIP) {
+        return readerList.get(readerIP);
     }
 }

@@ -44,4 +44,8 @@ public class Reader {
     public void setRole(String role) {
         this.role = role;
     }
+
+    public boolean isEntrance() {
+        return role.equals("in");
+    }
 }

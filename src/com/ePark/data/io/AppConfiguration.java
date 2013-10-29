@@ -46,6 +46,9 @@ public class AppConfiguration {
         return conf;
     }
 
+    /*
+     * Return the list of connected readers. The list is hashed on the reader ip
+     */
     public static LinkedHashMap<String, Reader> getReaders() {
         LinkedHashMap<String, Reader> iplist = new LinkedHashMap<>();
 

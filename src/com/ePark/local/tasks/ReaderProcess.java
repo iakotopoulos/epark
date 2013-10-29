@@ -53,7 +53,7 @@ public class ReaderProcess implements Runnable {
                 StringTokenizer stok = new StringTokenizer(line, ";");
                 //System.out.print("#" +  stok.nextElement());
                 //System.out.println("|" +  stok.nextElement());
-                theManager.newTagEvent(stok.nextElement().toString(), stok.nextElement().toString());
+                theManager.newTagEvent(theManager.gerReader(ip), stok.nextElement().toString(), stok.nextElement().toString());
             }
         }
         System.out.println("Process terminated!");

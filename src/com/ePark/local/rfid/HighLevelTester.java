@@ -18,14 +18,8 @@ public class HighLevelTester {
         try {
             EventManager eventManager = new EventManager();
 
-            ReaderManager readerManager = new ReaderManager();
-            
-            //Add Listener
-            readerManager.addListener(eventManager);
 
-            //    testManager.connect("192.168.25.203");         
-            //    testManager.connect("192.168.25.111");         
-            readerManager.Start(); //This is used to start ReaderManager. It actually attempts connection with IPs loaded from the cofiguration file
+            eventManager.Start(); //This is used to start EventManager. He is responsible for starting any other managers (readers, amagnetic etc)
 
 
         } catch (Exception ex) {
