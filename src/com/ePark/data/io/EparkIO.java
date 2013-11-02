@@ -19,8 +19,8 @@ import java.util.logging.Logger;
  */
 public class EparkIO {
 
-    public static boolean getCategories(TagEvent ev) {
-        String iQuery = "SELECT cid, cname FROM category WHERE parentid=1;";
+    public static boolean storeArrival(TagEvent ev) {
+        String iQuery = "INSERT INTO arrivals(tagid, intime) VALUES(?, CURRENT_TIMESTAMP);";
 
 
 
@@ -28,10 +28,12 @@ public class EparkIO {
         try (Connection con = new DBConnection().getConnection();
                 PreparedStatement pst = con.prepareStatement(iQuery);) {
 
+            pst.setString(1, ev.getTagid());
 
-            pst.executeQuery();
-
-            return true;
+            if (pst.executeUpdate() > 0) {
+                return true;
+            }
+            return false;
 
         } catch (SQLException ex) {
             Logger.getLogger(EparkIO.class.getName()).log(Level.SEVERE, null, ex);

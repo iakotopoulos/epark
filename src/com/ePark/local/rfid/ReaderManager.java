@@ -4,16 +4,17 @@
  */
 package com.ePark.local.rfid;
 
-import CSLibrary.HighLevelInterface;
 import com.ePark.data.io.AppConfiguration;
-import com.ePark.data.io.EparkIO;
+import com.ePark.local.events.DeviceListener;
+import com.ePark.local.rfid.epark.local.rfid.data.Reader;
 import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
-import com.ePark.local.task.ReaderProcess;
+import com.ePark.local.tasks.ReaderProcess;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,27 +26,33 @@ import java.util.logging.Logger;
  *
  * @author I-A
  */
-public class ReaderManagerP {
+public class ReaderManager {
 
     public static final int MAX_PROCESS = 5;
+    public final int MIN_OCCURENCE = 20;
     private Thread[] m_run_process;
     private Process[] m_javap;
     private int lastProcessId;
     private PrintWriter outputCommand;
-    
     private LinkedHashMap<String, TagEvent> tagList;
-    private LinkedHashMap<String, HighLevelInterface> readerList;
+    //The list of connected readers. The list is populated on start and is based on the reader IP
+    private LinkedHashMap<String, Reader> readerList;
+    private ArrayList<DeviceListener> listeners;
 
-    public ReaderManagerP() {
+    public ReaderManager() {
         AppConfiguration.loadConfiguration();
-        
-        readerList = new LinkedHashMap<>();
+
+
         tagList = new LinkedHashMap<>();
+        readerList = new LinkedHashMap<>();
+        listeners = new ArrayList<>();
+
         lastProcessId = 0;
         m_run_process = new Thread[MAX_PROCESS];
         m_javap = new Process[MAX_PROCESS];
-        
-         new Thread(new Runnable() {
+
+        //Start a thread waiting for shutdown command (Stop)
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 System.out.println("Press Enter to stop");
@@ -82,18 +89,19 @@ public class ReaderManagerP {
         try {
             ip = (ip == null ? "192.168.25.203" : ip);
 
-            m_run_process[lastProcessId] = new Thread(new ReaderProcess(ip, this));        
+            m_run_process[lastProcessId] = new Thread(new ReaderProcess(ip, this));
             m_run_process[lastProcessId].start();
             m_run_process[lastProcessId].join(500);
 
             ++lastProcessId;
         } catch (InterruptedException ex) {
-            Logger.getLogger(ReaderManagerP.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ReaderManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void Start(){
-        for(String ip: AppConfiguration.getReaders()){
+
+    public void Start() {
+        readerList = AppConfiguration.getReaders();
+        for (String ip : readerList.keySet()) {
             connect(ip);
         }
     }
@@ -104,30 +112,49 @@ public class ReaderManagerP {
      * timestamp of the event is added. If it is the first time a new event is
      * added with the current timestamp
      *
+     * @param r the reader that will produce the event
+     * @param s
      * @param tagid the tagid of the current event
      */
-    public void newTagEvent(String s, String tagid) {
+    public void newTagEvent(Reader r, String s, String tagid) {
         if (tagList.containsKey(tagid)) {
             tagList.get(tagid).setEventStamp(new Timestamp(System.currentTimeMillis()));
         } else {
-            tagList.put(tagid, new TagEvent(tagid, new Timestamp(System.currentTimeMillis())));
+            tagList.put(tagid, new TagEvent(tagid, new Timestamp(System.currentTimeMillis()), r));
         }
 
-        System.out.println(tagList.get(tagid));
-        System.out.println("--------------------------------------------------------------------------");
+        if (tagList.get(tagid).getEcount() > MIN_OCCURENCE) {
+
+            System.out.println(tagList.get(tagid));
+            System.out.println("--------------------------------------------------------------------------");
+
+            notifyListeners(tagList.get(tagid));
+        }
     }
-    
-    public Process getLastProcess(){
+
+    public void addListener(DeviceListener toAdd) {
+        listeners.add(toAdd);
+    }
+
+    private void notifyListeners(TagEvent ev) {
+        for (DeviceListener dl : listeners) {
+            dl.readerNotification(ev);
+        }
+    }
+
+    public Process getLastProcess() {
         return m_javap[lastProcessId];
     }
-    
-    public void setLastProcess(Process p){
-        m_javap[lastProcessId]=p;
+
+    public void setLastProcess(Process p) {
+        m_javap[lastProcessId] = p;
     }
 
     public int getLastProcessId() {
         return lastProcessId;
     }
-    
-    
+
+    public Reader gerReader(String readerIP) {
+        return readerList.get(readerIP);
+    }
 }

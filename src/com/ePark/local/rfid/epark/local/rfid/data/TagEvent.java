@@ -12,22 +12,24 @@ import java.sql.Timestamp;
  */
 public class TagEvent {
 
+    private Reader theReader;
     private String tagid;
     private Timestamp eventStamp;
     private int ecount;
-    private float rssi;
+    private String type; //IN|OUT
 
-    public TagEvent(String tagid, Timestamp eventStamp, float si) {
+    public TagEvent(String tagid, Timestamp eventStamp, Reader r) {
         this.tagid = tagid;
         this.eventStamp = eventStamp;
-        ecount = 1;
-        rssi = si;
+        theReader = r;
+        ecount = 1;        
     }
     
-    public TagEvent(String tagid, Timestamp eventStamp) {
+    public TagEvent(String tagid, Timestamp eventStamp, String type) {
         this.tagid = tagid;
         this.eventStamp = eventStamp;
         ecount = 1;        
+        this.type = type;
     }
 
     public String getTagid() {
@@ -42,20 +44,34 @@ public class TagEvent {
         return eventStamp;
     }
 
+    /**
+     * Update the timestamp and increase the counter
+     * @param eventStamp the timestamp of the event
+     */
     public void setEventStamp(Timestamp eventStamp) {
         this.eventStamp = eventStamp;
         ecount++;
     }
 
     public String toString() {
-        return "tagid: " + tagid + ", Signal Strength:" + rssi + ", last occurence " + eventStamp.toString() + ", (count " + ecount + ")";
+        return "tagid: " + tagid + ", last occurence " + eventStamp.toString() + ", (count " + ecount + ")";
     }
 
     public int getEcount() {
         return ecount;
     }
 
-    public void setRssi(float rssi) {
-        this.rssi = rssi;
+    public String getType() {
+        return type;
     }
+
+    public void setType(String type) {
+        this.type = type;
+}
+
+    public Reader getTheReader() {
+        return theReader;
+    }
+    
+    
 }
