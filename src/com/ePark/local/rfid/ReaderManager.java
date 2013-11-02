@@ -4,9 +4,7 @@
  */
 package com.ePark.local.rfid;
 
-import CSLibrary.HighLevelInterface;
 import com.ePark.data.io.AppConfiguration;
-import com.ePark.data.io.EparkIO;
 import com.ePark.local.events.DeviceListener;
 import com.ePark.local.rfid.epark.local.rfid.data.Reader;
 import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
@@ -74,8 +72,7 @@ public class ReaderManager {
                 } catch (IOException e) {
                     System.out.println("Error!");
                     System.exit(1);
-                } 
-
+                }
             }
         }).start();
     }

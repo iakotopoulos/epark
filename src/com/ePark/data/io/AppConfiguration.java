@@ -7,7 +7,6 @@ package com.ePark.data.io;
 import com.ePark.local.rfid.epark.local.rfid.data.Reader;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Properties;
@@ -51,14 +50,15 @@ public class AppConfiguration {
      */
     public static LinkedHashMap<String, Reader> getReaders() {
         LinkedHashMap<String, Reader> iplist = new LinkedHashMap<>();
-
+    
+   
         if (conf != null) {
             String ipString = conf.get("rfid_readers_in");
             StringTokenizer stok = new StringTokenizer(ipString, ";");
             while (stok.hasMoreTokens()) {
                 String nip = stok.nextToken();
                 iplist.put(nip, new Reader(nip, "in"));
-            }
+            }            
 
             ipString = conf.get("rfid_readers_out");
             stok = new StringTokenizer(ipString, ";");
@@ -73,7 +73,7 @@ public class AppConfiguration {
 
         return iplist;
     }
-
+    
     public static String getProperty(String pname) {
         return conf.get(pname);
     }

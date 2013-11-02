@@ -15,22 +15,22 @@ import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
  */
 public class EventManager implements DeviceListener {
 
-    ReaderManager rManager;
+   ReaderManager readerManager;
 
     public EventManager() {
-
-        rManager = new ReaderManager();
-        //Add Listener
-        rManager.addListener(this);
-
+        readerManager = new ReaderManager();
+        readerManager.addListener(this);       
     }
-
-    public void Start() {
-        rManager.Start();//This is used to start ReaderManager. It actually attempts connection with IPs loaded from the cofiguration file
+    
+    /**
+     * Start managers. For now only Readers
+     */
+    public void Start(){
+        readerManager.Start();
     }
 
     @Override
-    public void readerNotification(TagEvent ev) {
+    public void readerNotification(TagEvent ev) {        
         //Temporarly use this as an entrance event notification. next step is to use a magnetic notification
         if (ev.getTheReader().isEntrance()) {
             EparkIO.storeArrival(ev);

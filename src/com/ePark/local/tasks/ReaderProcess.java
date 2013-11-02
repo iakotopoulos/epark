@@ -38,7 +38,7 @@ public class ReaderProcess implements Runnable {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-
+       
     }
 
     private void writeProcessOutput(Process process) throws Exception {
@@ -48,12 +48,14 @@ public class ReaderProcess implements Runnable {
             String line = reader.readLine();
             if (line == null) {
                 break;
-            }            
-            if (line.startsWith("event")) {
+            }
+            System.out.println(line);
+            if(line.startsWith("event")){
                 StringTokenizer stok = new StringTokenizer(line, ";");
                 //System.out.print("#" +  stok.nextElement());
                 //System.out.println("|" +  stok.nextElement());
                 theManager.newTagEvent(theManager.gerReader(ip), stok.nextElement().toString(), stok.nextElement().toString());
+                
             }
         }
         System.out.println("Process terminated!");

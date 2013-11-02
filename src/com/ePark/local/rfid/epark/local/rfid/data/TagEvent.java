@@ -22,13 +22,13 @@ public class TagEvent {
         this.tagid = tagid;
         this.eventStamp = eventStamp;
         theReader = r;
-        ecount = 1;
+        ecount = 1;        
     }
-
+    
     public TagEvent(String tagid, Timestamp eventStamp, String type) {
         this.tagid = tagid;
         this.eventStamp = eventStamp;
-        ecount = 1;
+        ecount = 1;        
         this.type = type;
     }
 
@@ -67,7 +67,7 @@ public class TagEvent {
 
     public void setType(String type) {
         this.type = type;
-    }
+}
 
     public Reader getTheReader() {
         return theReader;
