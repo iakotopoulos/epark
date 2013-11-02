@@ -74,9 +74,7 @@ public class ReaderManager {
                 } catch (IOException e) {
                     System.out.println("Error!");
                     System.exit(1);
-                } finally {
-                    System.exit(0);
-                }
+                } 
 
             }
         }).start();
