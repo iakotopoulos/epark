@@ -23,7 +23,7 @@ public class EventManager implements DeviceListener {
     }
     
     /**
-     * Start managers
+     * Start managers. For now only Readers
      */
     public void Start(){
         readerManager.Start();
