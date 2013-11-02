@@ -19,9 +19,7 @@ public class EventManager implements DeviceListener {
 
     public EventManager() {
         readerManager = new ReaderManager();
-        readerManager.addListener(this);
-        
-       
+        readerManager.addListener(this);       
     }
     
     /**
