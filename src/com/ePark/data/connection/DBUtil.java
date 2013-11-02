@@ -9,8 +9,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author ykoto
+ * This class will be deprecated. I was necessary for secure closing of connections 
+ * but know I started using try-with-resources of java 1.7+
+ * @author I-A
  */
 public class DBUtil {
 
@@ -58,5 +59,4 @@ public class DBUtil {
             Logger.getLogger(DBUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
 }
