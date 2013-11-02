@@ -6,10 +6,9 @@ package com.ePark.local.rfid;
 
 import com.ePark.local.EventManager;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.Logger; 
 
 /**
- *
  * @author I-A
  */
 public class HighLevelTester {
