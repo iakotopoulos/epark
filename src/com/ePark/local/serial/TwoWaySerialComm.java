@@ -30,13 +30,13 @@ public class TwoWaySerialComm {
 
             if (commPort instanceof SerialPort) {
                 SerialPort serialPort = (SerialPort) commPort;
-                serialPort.setSerialPortParams(57600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+                serialPort.setSerialPortParams(38400, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 
                 InputStream in = serialPort.getInputStream();
                 OutputStream out = serialPort.getOutputStream();
 
                 (new Thread(new SerialReader(in))).start();
-                (new Thread(new SerialWriter(out))).start();
+             //   (new Thread(new SerialWriter(out))).start();
 
             } else {
                 System.out.println("Error: Only serial ports are handled by this example.");
@@ -91,7 +91,7 @@ public class TwoWaySerialComm {
 
     public static void main(String[] args) {
         try {
-            (new TwoWaySerialComm()).connect("COM3");
+            (new TwoWaySerialComm()).connect("COM13");
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

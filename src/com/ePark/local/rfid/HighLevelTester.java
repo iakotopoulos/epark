@@ -16,18 +16,8 @@ public class HighLevelTester {
     public static void main(String[] args) {
         try {
 
-
             EventManager evManager = new EventManager();
             evManager.Start();
-
-
-
-
-            /*    ReaderManager testManager = new ReaderManager();
-             testManager.addListener(evManager);
-       
-             testManager.Start(); //This is used to start ReaderManager. It actually attempts connection with IPs loaded from the cofiguration file
-             */
 
         } catch (Exception ex) {
             Logger.getLogger(HighLevelTester.class.getName()).log(Level.SEVERE, null, ex);

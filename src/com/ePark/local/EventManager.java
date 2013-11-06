@@ -7,7 +7,9 @@ package com.ePark.local;
 import com.ePark.data.io.EparkIO;
 import com.ePark.local.events.DeviceListener;
 import com.ePark.local.rfid.ReaderManager;
+import com.ePark.local.rfid.SerialManager;
 import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
+import com.ePark.local.serial.SerialTest;
 
 /**
  *
@@ -16,10 +18,14 @@ import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
 public class EventManager implements DeviceListener {
 
    ReaderManager readerManager;
+   SerialManager waspManager;
 
     public EventManager() {
         readerManager = new ReaderManager();
-        readerManager.addListener(this);       
+        readerManager.addListener(this);    
+        
+        waspManager = new SerialManager();
+        waspManager.addListener(this);
     }
     
     /**
@@ -27,6 +33,7 @@ public class EventManager implements DeviceListener {
      */
     public void Start(){
         readerManager.Start();
+        waspManager.Start();
     }
 
     @Override
@@ -38,7 +45,7 @@ public class EventManager implements DeviceListener {
     }
 
     @Override
-    public void magneticNotification() {
+    public void waspNotification() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -19,6 +19,7 @@ import java.util.TooManyListenersException;
  *
  * @author I-A
  */
+@Deprecated
 public class SimpleRead implements Runnable, SerialPortEventListener {
 
     static CommPortIdentifier portId;
@@ -33,7 +34,7 @@ public class SimpleRead implements Runnable, SerialPortEventListener {
         while (portList.hasMoreElements()) {
             portId = (CommPortIdentifier) portList.nextElement();
             if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-                if (portId.getName().equals("COM1")) {
+                if (portId.getName().equals("COM15")) {
                     //                if (portId.getName().equals("/dev/term/a")) {
                     SimpleRead reader = new SimpleRead();
                 }
@@ -59,7 +60,7 @@ public class SimpleRead implements Runnable, SerialPortEventListener {
         }
         serialPort.notifyOnDataAvailable(true);
         try {
-            serialPort.setSerialPortParams(9600,
+            serialPort.setSerialPortParams(38400,
                     SerialPort.DATABITS_8,
                     SerialPort.STOPBITS_1,
                     SerialPort.PARITY_NONE);

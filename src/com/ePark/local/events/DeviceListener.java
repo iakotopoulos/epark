@@ -13,6 +13,6 @@ import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
 public interface DeviceListener {
     
     public void readerNotification(TagEvent ev);
-    public void magneticNotification();
+    public void waspNotification();
         
 }

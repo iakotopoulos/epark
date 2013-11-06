@@ -2,8 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ePark.local.serial;
+package com.ePark.local.rfid;
 
+import com.ePark.local.events.DeviceListener;
+import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
+import com.ePark.local.serial.*;
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
@@ -14,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
@@ -21,9 +25,10 @@ import java.util.TooManyListenersException;
  *
  * @author I-A
  */
-public class SerialTest implements SerialPortEventListener {
+public class SerialManager implements SerialPortEventListener {
 
     SerialPort serialPort;
+    private ArrayList<DeviceListener> listeners;
     /**
      * The port we're normally going to use.
      */
@@ -49,6 +54,10 @@ public class SerialTest implements SerialPortEventListener {
      * Default bits per second for COM port.
      */
     private static final int DATA_RATE = 38400;
+    
+    public SerialManager(){
+        listeners = new ArrayList<>();
+    }
 
     public void Start() {
         CommPortIdentifier portId = null;
@@ -111,12 +120,23 @@ public class SerialTest implements SerialPortEventListener {
         if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
             try {
                 String inputLine = input.readLine();
-                System.out.println(inputLine);
+                //System.out.println(inputLine);
+                notifyListeners();
             } catch (Exception e) {
                 System.err.println(e.toString());
             }
         }
         // Ignore all the other eventTypes, but you should consider the other ones.
+    }
+    
+    public void addListener(DeviceListener toAdd) {
+        listeners.add(toAdd);
+    }
+
+    private void notifyListeners() {
+        for (DeviceListener dl : listeners) {
+            dl.waspNotification();
+        }
     }
 
     public static void main(String[] args) throws Exception {
