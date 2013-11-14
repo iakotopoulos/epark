@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 /**
- *
+ * 
  * @author I-A
  */
 public class ReaderProcess implements Runnable {
