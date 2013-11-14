@@ -4,6 +4,7 @@
  */
 package com.ePark.data.io;
 
+import com.ePark.local.EventManager;
 import com.ePark.local.rfid.epark.local.rfid.data.Reader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,6 +31,8 @@ public class AppConfiguration {
 
         try {
             //   ep.load(ReaderManagerP.class.getResourceAsStream("../../../../../config/config.properties"));
+            
+            //ep.load(EventManager.class.getResourceAsStream("/config/config.properties"));
             ep.load(new FileInputStream(new java.io.File(".").getCanonicalPath() + "/config/config.properties"));
             conf.put("rfid_readers_in", ep.getProperty("rfid_readers_in"));
             conf.put("rfid_readers_out", ep.getProperty("rfid_readers_out"));
@@ -38,6 +41,7 @@ public class AppConfiguration {
             conf.put("db_password", ep.getProperty("db_password"));
             conf.put("db_port", ep.getProperty("db_port"));
             conf.put("db_base", ep.getProperty("db_base"));
+            conf.put("serial_port", ep.getProperty("serial_port"));
 
         } catch (IOException ex) {
             Logger.getLogger(AppConfiguration.class.getName()).log(Level.SEVERE, null, ex);

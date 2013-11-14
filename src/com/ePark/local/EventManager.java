@@ -4,12 +4,12 @@
  */
 package com.ePark.local;
 
+import com.ePark.data.io.AppConfiguration;
 import com.ePark.data.io.EparkIO;
 import com.ePark.local.events.DeviceListener;
 import com.ePark.local.rfid.ReaderManager;
 import com.ePark.local.rfid.SerialManager;
 import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
-import com.ePark.local.serial.SerialTest;
 
 /**
  *
@@ -24,7 +24,7 @@ public class EventManager implements DeviceListener {
         readerManager = new ReaderManager();
         readerManager.addListener(this);    
         
-        waspManager = new SerialManager();
+        waspManager = new SerialManager(AppConfiguration.getProperty("serial_port"));
         waspManager.addListener(this);
     }
     
