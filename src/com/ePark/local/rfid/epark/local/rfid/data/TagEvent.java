@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  *
  * @author I-A
  */
-public class TagEvent {
+public class TagEvent implements Comparable{
 
     private Reader theReader;
     private String tagid;
@@ -53,6 +53,7 @@ public class TagEvent {
         ecount++;
     }
 
+    @Override
     public String toString() {
         return "tagid: " + tagid + ", last occurence " + eventStamp.toString() + ", (count " + ecount + ")";
     }
@@ -71,6 +72,11 @@ public class TagEvent {
 
     public Reader getTheReader() {
         return theReader;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.eventStamp.compareTo(((TagEvent)o).eventStamp);
     }
     
     

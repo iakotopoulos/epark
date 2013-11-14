@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -123,11 +124,13 @@ public class ReaderManager {
             tagList.put(tagid, new TagEvent(tagid, new Timestamp(System.currentTimeMillis()), r));
         }
 
+        //Check the threshold to decide if it is a tag passing through the reader
         if (tagList.get(tagid).getEcount() > MIN_OCCURENCE) {
 
+            System.out.println("--------------------------Tag passing reader--------------------------");
             System.out.println(tagList.get(tagid));
-            System.out.println("--------------------------------------------------------------------------");
 
+            //Notify the event manager
             notifyListeners(tagList.get(tagid));
         }
     }
@@ -140,6 +143,30 @@ public class ReaderManager {
         for (DeviceListener dl : listeners) {
             dl.readerNotification(ev);
         }
+    }
+
+    public TagEvent getLastINEvent() {
+        ArrayList<TagEvent> tempList = new ArrayList(tagList.values());
+        Collections.sort(tempList);
+
+        for (TagEvent ev : tempList) {
+            if (ev.getTheReader().isEntrance()) {
+                return ev;
+            }
+        }
+        return null;
+    }
+
+    public TagEvent getLastOUTEvent() {
+        ArrayList<TagEvent> tempList = new ArrayList(tagList.values());
+        Collections.sort(tempList);
+
+        for (TagEvent ev : tempList) {
+            if (!ev.getTheReader().isEntrance()) {
+                return ev;
+            }
+        }
+        return null;
     }
 
     public Process getLastProcess() {

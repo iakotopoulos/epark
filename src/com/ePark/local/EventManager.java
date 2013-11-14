@@ -17,35 +17,33 @@ import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
  */
 public class EventManager implements DeviceListener {
 
-   ReaderManager readerManager;
-   SerialManager waspManager;
+    ReaderManager readerManager;
+    SerialManager waspManager;
 
     public EventManager() {
         readerManager = new ReaderManager();
-        readerManager.addListener(this);    
-        
+        readerManager.addListener(this);
+
         waspManager = new SerialManager(AppConfiguration.getProperty("serial_port"));
         waspManager.addListener(this);
     }
-    
+
     /**
      * Start managers. For now only Readers
      */
-    public void Start(){
+    public void Start() {
         readerManager.Start();
         waspManager.Start();
     }
 
     @Override
-    public void readerNotification(TagEvent ev) {        
-        //Temporarly use this as an entrance event notification. next step is to use a magnetic notification
-        if (ev.getTheReader().isEntrance()) {
-            EparkIO.storeArrival(ev);
-        }
+    public void readerNotification(TagEvent ev) {
+        //In the current implementation the event is not important for the event
+        //manager. A magnetic notification is needed for the confirmation
     }
 
     @Override
     public void waspNotification() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //    EparkIO.storeArrival(ev);
     }
 }
