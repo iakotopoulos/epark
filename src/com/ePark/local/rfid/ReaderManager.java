@@ -125,7 +125,7 @@ public class ReaderManager {
         }
 
         //Check the threshold to decide if it is a tag passing through the reader
-        if (tagList.get(tagid).getEcount() > MIN_OCCURENCE) {
+        if (tagList.get(tagid).getEcount() > MIN_OCCURENCE && tagList.get(tagid).getEcount() < 2 * MIN_OCCURENCE) {
 
             System.out.println("--------------------------Tag passing reader--------------------------");
             System.out.println(tagList.get(tagid));

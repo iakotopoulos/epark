@@ -19,8 +19,8 @@ import java.util.logging.Logger;
  */
 public class EparkIO {
 
-    public static boolean storeArrival(TagEvent ev) {
-        String iQuery = "INSERT INTO arrivals(tagid, intime) VALUES(?, CURRENT_TIMESTAMP);";
+    public static boolean storeArrival(TagEvent ev, boolean isSend) {
+        String iQuery = "INSERT INTO arrivals(tagid, intime, send) VALUES(?, ?, ?);";
 
 
 
@@ -29,6 +29,8 @@ public class EparkIO {
                 PreparedStatement pst = con.prepareStatement(iQuery);) {
 
             pst.setString(1, ev.getTagid());
+            pst.setTimestamp(2, ev.getEventStamp());
+            pst.setString(3, (isSend) ? "yes" : "no");
 
             if (pst.executeUpdate() > 0) {
                 return true;
@@ -39,7 +41,9 @@ public class EparkIO {
             Logger.getLogger(EparkIO.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
+    }
 
-
+    public static boolean storeCompletion() {
+        return true;
     }
 }
