@@ -70,7 +70,7 @@ public class HttpPoster {
 
 
     private JSONObject postEvent(JSONObject jsonIn) throws java.net.SocketTimeoutException, MessageTypeException,
-            java.net.MalformedURLException, IOException {
+            java.net.MalformedURLException, IOException, ParkingException {
 
         formatUrl(jsonIn);
         url = Config.url;
@@ -124,12 +124,15 @@ public class HttpPoster {
 
 
         JSONObject jsonResponse = JSONObject.fromObject(response.toString());
+        if (jsonResponse.get("response_code") != 1){
+            throw new ParkingException(jsonResponse.getString("response_message"));
+        }
         return jsonResponse;
     }
     
     public JSONObject postArrival(String message_type, String version, 
             String parking_code, String tag_identifier, String tag_data, String time_in, String reader_code) throws java.net.SocketTimeoutException, 
-            MessageTypeException, java.net.MalformedURLException, java.io.IOException {
+            MessageTypeException, java.net.MalformedURLException, java.io.IOException, ParkingException {
         
         JSONObject jsonArrival = new JSONObject();
         jsonArrival.accumulate("message_type", message_type);
@@ -147,7 +150,7 @@ public class HttpPoster {
     
     public JSONObject postDeparture(String message_type, String version, 
             String parking_code, String tag_identifier, String tag_data, String time_out, String reader_code, String ticket_number) throws java.net.SocketTimeoutException, 
-            MessageTypeException, java.net.MalformedURLException, java.io.IOException {
+            MessageTypeException, java.net.MalformedURLException, java.io.IOException, ParkingException {
         
         JSONObject jsonDeparture = new JSONObject();
         jsonDeparture.accumulate("message_type", message_type);
