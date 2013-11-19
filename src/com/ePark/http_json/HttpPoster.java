@@ -127,8 +127,8 @@ public class HttpPoster {
         return jsonResponse;
     }
     
-    public JSONObject postArrival(String message_type, int version, 
-            String parking_code, int tag_identifier, String tag_data, String time_in, int reader_code) throws java.net.SocketTimeoutException, 
+    public JSONObject postArrival(String message_type, String version, 
+            String parking_code, String tag_identifier, String tag_data, String time_in, String reader_code) throws java.net.SocketTimeoutException, 
             MessageTypeException, java.net.MalformedURLException, java.io.IOException {
         
         JSONObject jsonArrival = new JSONObject();
@@ -145,8 +145,8 @@ public class HttpPoster {
         
     }
     
-    public JSONObject postDeparture(String message_type, int version, 
-            String parking_code, int tag_identifier, String tag_data, String time_out, int reader_code, int ticket_number) throws java.net.SocketTimeoutException, 
+    public JSONObject postDeparture(String message_type, String version, 
+            String parking_code, String tag_identifier, String tag_data, String time_out, String reader_code, String ticket_number) throws java.net.SocketTimeoutException, 
             MessageTypeException, java.net.MalformedURLException, java.io.IOException {
         
         JSONObject jsonDeparture = new JSONObject();
