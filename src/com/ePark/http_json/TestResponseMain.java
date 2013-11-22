@@ -27,30 +27,42 @@ public class TestResponseMain {
 
 
             /**
-             * * ARRIVALS OF VEHICLES WITH TAG IDs 1234567892 and 1234567893 **
+             *** TESTING ARRIVALS
              */
-            // vehichle with tag_identifier 1234567890 arrives
-            JSONObject arrival3 = httpPost.postArrival("IN", "1", "PK001", "1234567893", "123", "20130923210100", "123");
-            System.out.println("ARRIVAL 3: " + arrival3.toString());
+            // vehichle with tag_identifier 1234567891 arrives
+            JSONObject arrival0 = httpPost.postArrival("IN", "1", "PK001", "1234567890", "123", "20130923210100", "123");
+            System.out.println("ARRIVAL 0: " + arrival0.toString());
             // vehichle with tag_identifier 1234567893 arrives
             //JSONObject arrival2 = httpPost.postArrival("IN", 1, "PK001", 1234567893, "123", "20130923210100", 123);
             //System.out.println("ARRIVAL 2: " + arrival2.toString());
-
+               
+            /**
+             *** TESTING DEPARTURES
+             */
             /* DEPARTURES OF VEHICLES WITH TAG IDs 1234567892 and 1234567893 */
             // vehichle with tag_identifier 1234567893 departs
-            //JSONObject departure1 = httpPost.postDeparture("OUT", 1, "PK001", 1234567893, "123", "20130923210100", 123, 0);
-            //System.out.println("DEPARTURE 1: " + departure1.toString());
+            JSONObject departure0 = httpPost.postDeparture("OUT", "1", "PK001", "1234567890", "123", "20130923210100", "123", "0");
+            System.out.println("DEPARTURE 0: " + departure0.toString());
             // vehichle with tag_identifier 1234567890 departs
-            JSONObject departure3 = httpPost.postDeparture("OUT", "1", "PK001", "1234567893", "123", "20130923210100", "123", "0");
-            System.out.println("DEPARTURE 3: " + departure3.toString());
-            System.out.println(departure3.get("response_message"));
+            //JSONObject departure3 = httpPost.postDeparture("OUT", "1", "PK001", "1234567893", "123", "20130923210100", "123", "0");
+            //System.out.println("DEPARTURE 3: " + departure3.toString());
+            //System.out.println(departure3.get("response_message"));
 
             /**
-             * ** OFFLINE MESSAGE TESTING *****
+             *** OFFLINE MESSAGE TESTING *****
              */
             /* simulating offline message for arrival of 1234567890 */
             //JSONObject off_arrival = httpPost.postArrival("INOFFLINE", 1, "PK001", 1234567892, "123", "20130923210100", 123);
             //System.out.println("OFFLINE ARRIVAL: " + off_arrival.toString());
+            
+            /**
+             * ** AVAILABILITY UPDATE TESTING *****
+             * if add_incoming = add_outgoing = 0, it just returns the number of available parking spots
+             */
+            
+            JSONObject au_test = httpPost.postAvailabilityUpdate("PK001", "0", "10", "123");
+            System.out.println(au_test.toString());
+            
         } catch (SocketTimeoutException ex) {
             Logger.getLogger(TestResponseMain.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MessageTypeException ex) {
