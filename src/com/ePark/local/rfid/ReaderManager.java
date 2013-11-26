@@ -35,7 +35,7 @@ public class ReaderManager {
     private Process[] m_javap;
     private int lastProcessId;
     private PrintWriter outputCommand;
-    private LinkedHashMap<String, TagEvent> tagList;
+    private LinkedHashMap<String, TagEvent> tagList; //Tagid, Event
     //The list of connected readers. The list is populated on start and is based on the reader IP
     private LinkedHashMap<String, Reader> readerList;
     private ArrayList<DeviceListener> listeners;
@@ -145,12 +145,18 @@ public class ReaderManager {
         }
     }
 
+    /**
+     * Check the last 30 seconds for a tag event
+     *
+     * @return the tag event else return null to indicate that no entrance event
+     * occurred the last 30 seconds
+     */
     public TagEvent getLastINEvent() {
         ArrayList<TagEvent> tempList = new ArrayList(tagList.values());
         Collections.sort(tempList);
 
         for (TagEvent ev : tempList) {
-            if (ev.getTheReader().isEntrance()) {
+            if (ev.getTheReader().isEntrance() && (System.currentTimeMillis() - ev.getEventStamp().getTime()) < 30000) {
                 return ev;
             }
         }
@@ -167,6 +173,10 @@ public class ReaderManager {
             }
         }
         return null;
+    }
+
+    public void removeTag(String tagid) {
+        tagList.remove(tagid);
     }
 
     public Process getLastProcess() {

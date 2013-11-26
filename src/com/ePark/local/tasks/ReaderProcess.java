@@ -36,7 +36,7 @@ public class ReaderProcess implements Runnable {
             readerManager.setLastProcess(builder.start());
             writeProcessOutput(readerManager.getLastProcess());
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            System.out.println(ip + ex.getMessage());
         }
 
     }
@@ -54,6 +54,7 @@ public class ReaderProcess implements Runnable {
                 StringTokenizer stok = new StringTokenizer(line, ";");
                 //System.out.print("#" +  stok.nextElement());
                 //System.out.println("|" +  stok.nextElement());
+                stok.nextElement();
                 readerManager.newTagEvent(readerManager.gerReader(ip), stok.nextElement().toString(), stok.nextElement().toString());
 
             }

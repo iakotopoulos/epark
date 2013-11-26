@@ -42,6 +42,7 @@ public class AppConfiguration {
             conf.put("db_port", ep.getProperty("db_port"));
             conf.put("db_base", ep.getProperty("db_base"));
             conf.put("serial_port", ep.getProperty("serial_port"));
+            conf.put("parking_name", ep.getProperty("parking_name"));
 
         } catch (IOException ex) {
             Logger.getLogger(AppConfiguration.class.getName()).log(Level.SEVERE, null, ex);

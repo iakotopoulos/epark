@@ -52,6 +52,9 @@ public class EventManager implements DeviceListener {
     public void readerNotification(TagEvent ev) {
         //In the current implementation the event is not important for the event
         //manager. A magnetic notification is needed for the confirmation
+
+        //########################### TESTING ONLY
+        waspNotification();
     }
 
     /**
@@ -61,15 +64,17 @@ public class EventManager implements DeviceListener {
     @Override
     public void waspNotification() {
         boolean messageSend = true;
+        JSONObject response = null;
         //Supposing it is a magnetic at the entrance            
         TagEvent theTagEvent = readerManager.getLastINEvent();
+
 
         try {
 
             //Supposing it is a magnetic at the entrance            
-            JSONObject arrival1 = httpPost.postArrival("IN", "1.0", "PK001", "1234567892", "123", "20130923210100", "123");
+//            response = httpPost.postArrival("IN", "1.0", AppConfiguration.getProperty("parking_name"), "1234567890"/*theTagEvent.getTagid()*/, "123", theTagEvent.getEventStamp().toString(), theTagEvent.getTheReader().getIp());
 //            System.out.println("ARRIVAL : " + arrival1.toString());
-
+            response = httpPost.postDeparture("OUT", "1.0", AppConfiguration.getProperty("parking_name"), "1234567890", "123", theTagEvent.getEventStamp().toString(), theTagEvent.getTheReader().getIp(), "0");
 
         } catch (SocketTimeoutException ex) {
             messageSend = false;
@@ -86,7 +91,23 @@ public class EventManager implements DeviceListener {
         } catch (ParkingException ex) {
             Logger.getLogger(EventManager.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            EparkIO.storeArrival(theTagEvent, messageSend);
+//            processArrival(theTagEvent, messageSend, response);
+            processDeparture(theTagEvent, messageSend, response);
         }
+    }
+
+    private void processArrival(TagEvent te, boolean send, JSONObject response) {
+        EparkIO.storeArrival(te, send);
+        readerManager.removeTag(te.getTagid());
+    }
+
+    private void processDeparture(TagEvent te, boolean send, JSONObject response) {
+        // 
+        
+        float fee = (response!=null)?(float) response.get("fee_amount"):-1;
+
+
+        EparkIO.storeCompletion(te, send, fee);
+        readerManager.removeTag(te.getTagid());
     }
 }

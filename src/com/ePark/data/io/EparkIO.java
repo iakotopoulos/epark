@@ -43,7 +43,46 @@ public class EparkIO {
         }
     }
 
-    public static boolean storeCompletion() {
-        return true;
+    public static boolean storeCompletion(TagEvent ev, boolean isSend, float fee) {
+
+        String ic = "Insert into completed(tagid, intime, charge, send) select tagid, intime, ?, ? from arrivals WHERE tagid=?;";
+        String dc = "DELETE FROM arrivals WHERE tagid=?";
+
+
+
+        ResultSet rs = null;
+        try (Connection con = new DBConnection().getConnection()) {
+
+            try (
+                    PreparedStatement pst = con.prepareStatement(ic);
+                    PreparedStatement pst1 = con.prepareStatement(dc);) {
+                con.setAutoCommit(false);
+
+                pst.setFloat(1, fee);
+                pst.setString(2, (isSend) ? "yes" : "no");
+                pst.setString(3, ev.getTagid());
+
+                //Insert into completed
+                pst.executeUpdate();
+
+                pst1.setString(1, ev.getTagid());
+                //Empty arrivals
+                pst1.executeUpdate();
+
+                con.commit();
+                return true;
+
+            } catch (SQLException ex) {
+                con.rollback();
+                con.setAutoCommit(true);
+                Logger.getLogger(EparkIO.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+            } finally {
+                con.setAutoCommit(true);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(EparkIO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
     }
 }
