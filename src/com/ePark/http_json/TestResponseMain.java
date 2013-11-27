@@ -30,8 +30,19 @@ public class TestResponseMain {
              *** TESTING ARRIVALS
              */
             // vehichle with tag_identifier 1234567891 arrives
-            JSONObject arrival0 = httpPost.postArrival("IN", "1", "PK001", "1234567890", "123", "20130923210100", "123");
-            System.out.println("ARRIVAL 0: " + arrival0.toString());
+            ArrivalResponse arrival3 = httpPost.postArrival("IN", "1", "PK001", "1234567893", "123", "20130923210100", "123");
+            System.out.println("ARRIVAL 3: " + arrival3.toString());
+            System.out.println("Ticket Number is: " + arrival3.getTicketNumber());
+            System.out.println("Auth Amount is: " + arrival3.getAuthAmount());
+            System.out.println("Card Name is: " + arrival3.getCardName());
+            System.out.println("Card Balance is: " + arrival3.getCardBalance());
+            System.out.println("Account Name is: " + arrival3.getAccountName());
+            System.out.println("Account Balance is: " + arrival3.getAccountBalance());
+            System.out.println("Car No is: " + arrival3.getCarNo());
+            System.out.println("Display Message is: " + arrival3.getDisplayMessage());
+            System.out.println("Response Code is: " + arrival3.getResponseCode());
+            System.out.println("Response Message is: " + arrival3.getResponseMessage());
+            System.out.println();
             // vehichle with tag_identifier 1234567893 arrives
             //JSONObject arrival2 = httpPost.postArrival("IN", 1, "PK001", 1234567893, "123", "20130923210100", 123);
             //System.out.println("ARRIVAL 2: " + arrival2.toString());
@@ -41,8 +52,20 @@ public class TestResponseMain {
              */
             /* DEPARTURES OF VEHICLES WITH TAG IDs 1234567892 and 1234567893 */
             // vehichle with tag_identifier 1234567893 departs
-            JSONObject departure0 = httpPost.postDeparture("OUT", "1", "PK001", "1234567890", "123", "20130923210100", "123", "0");
-            System.out.println("DEPARTURE 0: " + departure0.toString());
+            DepartureResponse departure3 = httpPost.postDeparture("OUT", "1", "PK001", "1234567893", "123", "20130923210100", "123", "0");
+            System.out.println("DEPARTURE 3: " + departure3.toString());
+            System.out.println("Ticket Number is: " + departure3.getTicketNumber());
+            System.out.println("Fee Amount is: " + departure3.getFeeAmount());
+            System.out.println("Card Name is: " + departure3.getCardName());
+            System.out.println("Card Balance is: " + departure3.getCardBalance());
+            System.out.println("Account Name is: " + departure3.getAccountName());
+            System.out.println("Account Balance is: " + departure3.getAccountBalance());
+            System.out.println("Car No is: " + departure3.getCarNo());
+            System.out.println("Duration (min) is: " + departure3.getDurationMinutes());
+            System.out.println("Display Message is: " + departure3.getDisplayMessage());
+            System.out.println("Response Code is: " + departure3.getResponseCode());
+            System.out.println("Response Message is: " + departure3.getResponseMessage());
+            System.out.println();
             // vehichle with tag_identifier 1234567890 departs
             //JSONObject departure3 = httpPost.postDeparture("OUT", "1", "PK001", "1234567893", "123", "20130923210100", "123", "0");
             //System.out.println("DEPARTURE 3: " + departure3.toString());
@@ -60,8 +83,13 @@ public class TestResponseMain {
              * if add_incoming = add_outgoing = 0, it just returns the number of available parking spots
              */
             
-            JSONObject au_test = httpPost.postAvailabilityUpdate("PK001", "0", "10", "123");
+            AUResponse au_test = httpPost.postAvailabilityUpdate("PK001", "0", "10", "123");
             System.out.println(au_test.toString());
+            System.out.println("Response Code is: " + au_test.getResponseCode());
+            System.out.println("Response Message is: " + au_test.getResponseMessage());
+            System.out.println("Availability is: " + au_test.getAvailability());
+            System.out.println("Availability Disabled is: " + au_test.getAvailabilityDisabled());
+            System.out.println();
             
         } catch (SocketTimeoutException ex) {
             Logger.getLogger(TestResponseMain.class.getName()).log(Level.SEVERE, null, ex);

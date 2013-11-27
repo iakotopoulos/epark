@@ -98,7 +98,7 @@ public class HttpPoster {
             url = url + Config.availabilityUpdate;
         }
         System.out.println("URL is: " + url);
-
+        
         URL obj = new URL(url);
         con = (HttpURLConnection) obj.openConnection();
         //add reuqest header
@@ -141,7 +141,7 @@ public class HttpPoster {
         return jsonResponse;
     }
 
-    public JSONObject postArrival(String message_type, String version,
+    public ArrivalResponse postArrival(String message_type, String version,
             String parking_code, String tag_identifier, String tag_data, String time_in, String reader_code) throws java.net.SocketTimeoutException,
             MessageTypeException, java.net.MalformedURLException, java.io.IOException, ParkingException {
 
@@ -154,12 +154,12 @@ public class HttpPoster {
         jsonArrival.accumulate("time_in", time_in);
         jsonArrival.accumulate("reader_code", reader_code);
 
-
-        return postEvent("event", jsonArrival);
+        JSONObject jsonResponse = postEvent("event", jsonArrival);
+        return new ArrivalResponse(jsonResponse);
 
     }
 
-    public JSONObject postDeparture(String message_type, String version,
+    public DepartureResponse postDeparture(String message_type, String version,
             String parking_code, String tag_identifier, String tag_data, String time_out, String reader_code, String ticket_number) throws java.net.SocketTimeoutException,
             MessageTypeException, java.net.MalformedURLException, java.io.IOException, ParkingException {
 
@@ -172,12 +172,13 @@ public class HttpPoster {
         jsonDeparture.accumulate("time_out", time_out);
         jsonDeparture.accumulate("reader_code", reader_code);
         jsonDeparture.accumulate("ticket_number", ticket_number);
-
-        return postEvent("event", jsonDeparture);
+        
+        JSONObject jsonResponse = postEvent("event", jsonDeparture);
+        return new DepartureResponse(jsonResponse);
 
     }
 
-    public JSONObject postAvailabilityUpdate(String parking_code, String add_incoming, String add_outgoing, String reader_code) throws java.net.SocketTimeoutException,
+    public AUResponse postAvailabilityUpdate(String parking_code, String add_incoming, String add_outgoing, String reader_code) throws java.net.SocketTimeoutException,
             MessageTypeException, java.net.MalformedURLException, java.io.IOException, ParkingException {
         JSONObject jsonAvailabilityUpdate = new JSONObject();
         //jsonAvailabilityUpdate.accumulate("version", Config.availabilityUpdateVersion);
@@ -185,8 +186,9 @@ public class HttpPoster {
         jsonAvailabilityUpdate.accumulate("add_incoming", add_incoming);
         jsonAvailabilityUpdate.accumulate("add_outgoing", add_outgoing);
         jsonAvailabilityUpdate.accumulate("reader_code", reader_code);
-
-        return postEvent("au", jsonAvailabilityUpdate);
+        
+        JSONObject jsonResponse = postEvent("au", jsonAvailabilityUpdate);
+        return new AUResponse(jsonResponse);
 
     }
 }
