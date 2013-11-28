@@ -6,12 +6,13 @@ package com.ePark.local;
 
 import com.ePark.data.io.AppConfiguration;
 import com.ePark.data.io.EparkIO;
+import com.ePark.http_json.DepartureResponse;
 import com.ePark.http_json.HttpPoster;
 import com.ePark.http_json.MessageTypeException;
 import com.ePark.http_json.ParkingException;
 import com.ePark.local.events.DeviceListener;
 import com.ePark.local.rfid.ReaderManager;
-import com.ePark.local.rfid.SerialManager;
+import com.ePark.local.sensors.SerialManager;
 import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -64,7 +65,7 @@ public class EventManager implements DeviceListener {
     @Override
     public void waspNotification() {
         boolean messageSend = true;
-        JSONObject response = null;
+        DepartureResponse response = null;
         //Supposing it is a magnetic at the entrance            
         TagEvent theTagEvent = readerManager.getLastINEvent();
 
@@ -101,10 +102,10 @@ public class EventManager implements DeviceListener {
         readerManager.removeTag(te.getTagid());
     }
 
-    private void processDeparture(TagEvent te, boolean send, JSONObject response) {
+    private void processDeparture(TagEvent te, boolean send, DepartureResponse response) {
         // 
         
-        float fee = (response!=null)?(float) response.get("fee_amount"):-1;
+        float fee = (response!=null)?(float) response.getFeeAmount():-1;
 
 
         EparkIO.storeCompletion(te, send, fee);
