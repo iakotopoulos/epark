@@ -9,7 +9,6 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.sf.json.JSONObject;
 
 /**
  *
