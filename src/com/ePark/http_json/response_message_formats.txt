@@ -1,0 +1,37 @@
+ 
+ ARRIVAL
+ {
+	"ticket_number":49121,
+	"auth_amount":"1",
+	"card_name":"Haris Petrou",
+	"card_balance":92,
+	"account_name":"ITena Solutions Ltd",
+	"account_balance":65.5,
+	"car_no":"KJJ521",
+	"display_message":"Welcome Haris Petrou",
+	"response_code":1,
+	"response_message":"Success"
+ }
+ 
+ DEPARTURE
+ {
+	"ticket_number":49121,
+	"fee_amount":"1",
+	"card_name":"Haris Petrou",
+	"card_balance":91,
+	"account_name":"ITena Solutions Ltd",
+	"account_balance":64.5,
+	"car_no":"KJJ521",
+	"duration_minutes":0,
+	"display_message":"Parking fee 1.00  Thank you.",
+	"response_code":1,
+	"response_message":"SUCCESS" 
+ }
+ 
+ AVAILABILITY_UPDATE
+ {
+	"response_code":1,
+	"response_message":"SUCCESS",
+	"availability":70,
+	"availability_disabled":2
+ }

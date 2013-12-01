@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ePark.local.serial;
+package com.ePark.local.sensors;
 
+import com.ePark.local.events.DeviceListener;
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
@@ -14,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
@@ -21,17 +23,21 @@ import java.util.TooManyListenersException;
  *
  * @author I-A
  */
-public class SerialTest implements SerialPortEventListener {
+public class SerialManager implements SerialPortEventListener {
 
     SerialPort serialPort;
+    private ArrayList<DeviceListener> listeners;
     /**
-     * The port we're normally going to use.
+     * The port name examples... Replaced this with a parameter in order to be easily configured
      */
     private static final String PORT_NAMES[] = {
         "/dev/tty.usbserial-A9007UX1", // Mac OS X
         "/dev/ttyUSB0", // Linux
         "COM13", // Windows
     };
+    
+    private String port_name;
+    
     /**
      * A BufferedReader which will be fed by a InputStreamReader converting the
      * bytes into characters making the displayed results codepage independent
@@ -49,6 +55,12 @@ public class SerialTest implements SerialPortEventListener {
      * Default bits per second for COM port.
      */
     private static final int DATA_RATE = 38400;
+    
+    public SerialManager(String port){
+        port_name = port;
+        PORT_NAMES[2]=port_name;
+        listeners = new ArrayList<>();
+    }
 
     public void Start() {
         CommPortIdentifier portId = null;
@@ -111,16 +123,27 @@ public class SerialTest implements SerialPortEventListener {
         if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
             try {
                 String inputLine = input.readLine();
-                System.out.println(inputLine);
+                //System.out.println(inputLine);
+                notifyListeners();
             } catch (Exception e) {
                 System.err.println(e.toString());
             }
         }
         // Ignore all the other eventTypes, but you should consider the other ones.
     }
+    
+    public void addListener(DeviceListener toAdd) {
+        listeners.add(toAdd);
+    }
+
+    private void notifyListeners() {
+        for (DeviceListener dl : listeners) {
+            dl.waspNotification();
+        }
+    }
 
     public static void main(String[] args) throws Exception {
-        SerialTest main = new SerialTest();
+    /*    SerialTest main = new SerialTest();
         main.Start();
     /*    Thread t = new Thread() {
             public void run() {

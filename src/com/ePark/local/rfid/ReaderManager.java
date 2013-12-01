@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,7 +35,7 @@ public class ReaderManager {
     private Process[] m_javap;
     private int lastProcessId;
     private PrintWriter outputCommand;
-    private LinkedHashMap<String, TagEvent> tagList;
+    private LinkedHashMap<String, TagEvent> tagList; //Tagid, Event
     //The list of connected readers. The list is populated on start and is based on the reader IP
     private LinkedHashMap<String, Reader> readerList;
     private ArrayList<DeviceListener> listeners;
@@ -123,11 +124,13 @@ public class ReaderManager {
             tagList.put(tagid, new TagEvent(tagid, new Timestamp(System.currentTimeMillis()), r));
         }
 
-        if (tagList.get(tagid).getEcount() > MIN_OCCURENCE) {
+        //Check the threshold to decide if it is a tag passing through the reader
+        if (tagList.get(tagid).getEcount() > MIN_OCCURENCE && tagList.get(tagid).getEcount() < 2 * MIN_OCCURENCE) {
 
+            System.out.println("--------------------------Tag passing reader--------------------------");
             System.out.println(tagList.get(tagid));
-            System.out.println("--------------------------------------------------------------------------");
 
+            //Notify the event manager
             notifyListeners(tagList.get(tagid));
         }
     }
@@ -140,6 +143,40 @@ public class ReaderManager {
         for (DeviceListener dl : listeners) {
             dl.readerNotification(ev);
         }
+    }
+
+    /**
+     * Check the last 30 seconds for a tag event
+     *
+     * @return the tag event else return null to indicate that no entrance event
+     * occurred the last 30 seconds
+     */
+    public TagEvent getLastINEvent() {
+        ArrayList<TagEvent> tempList = new ArrayList(tagList.values());
+        Collections.sort(tempList);
+
+        for (TagEvent ev : tempList) {
+            if (ev.getTheReader().isEntrance() && (System.currentTimeMillis() - ev.getEventStamp().getTime()) < 30000) {
+                return ev;
+            }
+        }
+        return null;
+    }
+
+    public TagEvent getLastOUTEvent() {
+        ArrayList<TagEvent> tempList = new ArrayList(tagList.values());
+        Collections.sort(tempList);
+
+        for (TagEvent ev : tempList) {
+            if (!ev.getTheReader().isEntrance()) {
+                return ev;
+            }
+        }
+        return null;
+    }
+
+    public void removeTag(String tagid) {
+        tagList.remove(tagid);
     }
 
     public Process getLastProcess() {

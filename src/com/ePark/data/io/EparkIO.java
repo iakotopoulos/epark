@@ -19,8 +19,8 @@ import java.util.logging.Logger;
  */
 public class EparkIO {
 
-    public static boolean storeArrival(TagEvent ev) {
-        String iQuery = "INSERT INTO arrivals(tagid, intime) VALUES(?, CURRENT_TIMESTAMP);";
+    public static boolean storeArrival(TagEvent ev, boolean isSend) {
+        String iQuery = "INSERT INTO arrivals(tagid, intime, send) VALUES(?, ?, ?);";
 
 
 
@@ -29,6 +29,8 @@ public class EparkIO {
                 PreparedStatement pst = con.prepareStatement(iQuery);) {
 
             pst.setString(1, ev.getTagid());
+            pst.setTimestamp(2, ev.getEventStamp());
+            pst.setString(3, (isSend) ? "yes" : "no");
 
             if (pst.executeUpdate() > 0) {
                 return true;
@@ -39,7 +41,48 @@ public class EparkIO {
             Logger.getLogger(EparkIO.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
+    }
+
+    public static boolean storeCompletion(TagEvent ev, boolean isSend, float fee) {
+
+        String ic = "Insert into completed(tagid, intime, charge, send) select tagid, intime, ?, ? from arrivals WHERE tagid=?;";
+        String dc = "DELETE FROM arrivals WHERE tagid=?";
 
 
+
+        ResultSet rs = null;
+        try (Connection con = new DBConnection().getConnection()) {
+
+            try (
+                    PreparedStatement pst = con.prepareStatement(ic);
+                    PreparedStatement pst1 = con.prepareStatement(dc);) {
+                con.setAutoCommit(false);
+
+                pst.setFloat(1, fee);
+                pst.setString(2, (isSend) ? "yes" : "no");
+                pst.setString(3, ev.getTagid());
+
+                //Insert into completed
+                pst.executeUpdate();
+
+                pst1.setString(1, ev.getTagid());
+                //Empty arrivals
+                pst1.executeUpdate();
+
+                con.commit();
+                return true;
+
+            } catch (SQLException ex) {
+                con.rollback();
+                con.setAutoCommit(true);
+                Logger.getLogger(EparkIO.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+            } finally {
+                con.setAutoCommit(true);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(EparkIO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
     }
 }

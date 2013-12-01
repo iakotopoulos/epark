@@ -1,4 +1,4 @@
 nbproject/
 build/
-/dist/
 
+!/dist/epark2.jar

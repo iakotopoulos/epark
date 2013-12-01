@@ -16,12 +16,12 @@ import java.util.StringTokenizer;
  */
 public class ReaderProcess implements Runnable {
 
-    private ReaderManager theManager;
+    private ReaderManager readerManager;
     private String ip;
 
     public ReaderProcess(String ip, ReaderManager tm) {
         this.ip = ip;
-        this.theManager = tm;
+        this.readerManager = tm;
     }
 
     @Override
@@ -29,16 +29,16 @@ public class ReaderProcess implements Runnable {
         ProcessBuilder builder = new ProcessBuilder("java", "-jar", "EparkTask.jar", "-ip", ip);
 
         try {
-            if (theManager.getLastProcessId() > ReaderManager.MAX_PROCESS) {
+            if (readerManager.getLastProcessId() > ReaderManager.MAX_PROCESS) {
                 System.out.println("Error: Exceed the maximum number of allowable process.");
                 return;
             }
-            theManager.setLastProcess(builder.start());
-            writeProcessOutput(theManager.getLastProcess());
+            readerManager.setLastProcess(builder.start());
+            writeProcessOutput(readerManager.getLastProcess());
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            System.out.println(ip + ex.getMessage());
         }
-       
+
     }
 
     private void writeProcessOutput(Process process) throws Exception {
@@ -49,13 +49,14 @@ public class ReaderProcess implements Runnable {
             if (line == null) {
                 break;
             }
-            System.out.println(line);
-            if(line.startsWith("event")){
+            //This line prints everytime a tag is read. Use it only for testing | System.out.println(line);
+            if (line.startsWith("event")) {
                 StringTokenizer stok = new StringTokenizer(line, ";");
                 //System.out.print("#" +  stok.nextElement());
                 //System.out.println("|" +  stok.nextElement());
-                theManager.newTagEvent(theManager.gerReader(ip), stok.nextElement().toString(), stok.nextElement().toString());
-                
+                stok.nextElement();
+                readerManager.newTagEvent(readerManager.gerReader(ip), stok.nextElement().toString(), stok.nextElement().toString());
+
             }
         }
         System.out.println("Process terminated!");
