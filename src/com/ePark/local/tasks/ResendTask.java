@@ -52,6 +52,7 @@ public class ResendTask implements Runnable {
                 Logger.getLogger(ResendTask.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        System.out.println("Resend was successful");
 
     }
 }

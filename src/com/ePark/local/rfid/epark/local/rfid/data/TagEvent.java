@@ -5,6 +5,7 @@
 package com.ePark.local.rfid.epark.local.rfid.data;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -42,6 +43,12 @@ public class TagEvent implements Comparable{
 
     public Timestamp getEventStamp() {
         return eventStamp;
+    }
+    
+    public String getEventStampString(){
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        
+        return df.format(eventStamp);
     }
 
     /**

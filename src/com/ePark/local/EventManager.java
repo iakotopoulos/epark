@@ -120,7 +120,7 @@ public class EventManager implements DeviceListener {
         DepartureResponse response = null;
         try {
 
-            response = httpPost.postDeparture(mtype, "1.0", AppConfiguration.getProperty("parking_name"), "1234567890", "123", theTagEvent.getEventStamp().toString(), theTagEvent.getTheReader().getIp(), "0");
+            response = httpPost.postDeparture(mtype, "1.0", AppConfiguration.getProperty("parking_name"), "1234567890", "123", theTagEvent.getEventStampString(), theTagEvent.getTheReader().getIp(), "0");
             return response;
 
         } catch (SocketTimeoutException ex) {
@@ -143,7 +143,7 @@ public class EventManager implements DeviceListener {
 
         try {
 
-            response = httpPost.postArrival(mtype, "1.0", AppConfiguration.getProperty("parking_name"), "1234567890"/*theTagEvent.getTagid()*/, "123", theTagEvent.getEventStamp().toString(), theTagEvent.getTheReader().getIp());
+            response = httpPost.postArrival(mtype, "1.0", AppConfiguration.getProperty("parking_name"), "1234567890"/*theTagEvent.getTagid()*/, "123", theTagEvent.getEventStampString(), theTagEvent.getTheReader().getIp());
             return response;
 
         } catch (SocketTimeoutException ex) {
