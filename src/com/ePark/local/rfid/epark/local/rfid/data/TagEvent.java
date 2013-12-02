@@ -62,6 +62,10 @@ public class TagEvent implements Comparable{
         return ecount;
     }
 
+    /**
+     * 
+     * @return IN for arrival event and OUT for departure
+     */
     public String getType() {
         return type;
     }

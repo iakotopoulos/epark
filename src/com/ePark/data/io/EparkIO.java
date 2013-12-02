@@ -6,6 +6,7 @@ package com.ePark.data.io;
 
 import com.ePark.data.connection.DBConnection;
 import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
+import com.ePark.local.tasks.ResendTask;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,7 +44,7 @@ public class EparkIO {
         }
     }
 
-    public static boolean storeCompletion(TagEvent ev, boolean isSend, float fee) {
+    public static boolean storeCompletion(TagEvent ev, boolean isSend, Double fee) {
 
         String ic = "Insert into completed(tagid, intime, charge, send) select tagid, intime, ?, ? from arrivals WHERE tagid=?;";
         String dc = "DELETE FROM arrivals WHERE tagid=?";
@@ -58,7 +59,7 @@ public class EparkIO {
                     PreparedStatement pst1 = con.prepareStatement(dc);) {
                 con.setAutoCommit(false);
 
-                pst.setFloat(1, fee);
+                pst.setDouble(1, fee);
                 pst.setString(2, (isSend) ? "yes" : "no");
                 pst.setString(3, ev.getTagid());
 
