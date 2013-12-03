@@ -28,16 +28,15 @@ public class SerialManager implements SerialPortEventListener {
     SerialPort serialPort;
     private ArrayList<DeviceListener> listeners;
     /**
-     * The port name examples... Replaced this with a parameter in order to be easily configured
+     * The port name examples... Replaced this with a parameter in order to be
+     * easily configured
      */
     private static final String PORT_NAMES[] = {
         "/dev/tty.usbserial-A9007UX1", // Mac OS X
         "/dev/ttyUSB0", // Linux
         "COM13", // Windows
     };
-    
     private String port_name;
-    
     /**
      * A BufferedReader which will be fed by a InputStreamReader converting the
      * bytes into characters making the displayed results codepage independent
@@ -55,10 +54,10 @@ public class SerialManager implements SerialPortEventListener {
      * Default bits per second for COM port.
      */
     private static final int DATA_RATE = 38400;
-    
-    public SerialManager(String port){
+
+    public SerialManager(String port) {
         port_name = port;
-        PORT_NAMES[2]=port_name;
+        PORT_NAMES[2] = port_name;
         listeners = new ArrayList<>();
     }
 
@@ -124,38 +123,47 @@ public class SerialManager implements SerialPortEventListener {
             try {
                 String inputLine = input.readLine();
                 //System.out.println(inputLine);
-                notifyListeners();
+                String pos = null;
+                if (inputLine != null && inputLine.length() > 1 && inputLine.indexOf("EX")>0) {
+                    pos="############################EX";
+                    System.out.println("Exit");
+                } else if (inputLine != null && inputLine.length() > 1 && inputLine.indexOf("EN")>0) {
+                    pos="#############################IN";
+                    System.out.println("Entrance");
+                }
+
+                //notifyListeners();
             } catch (Exception e) {
                 System.err.println(e.toString());
             }
         }
         // Ignore all the other eventTypes, but you should consider the other ones.
     }
-    
+
     public void addListener(DeviceListener toAdd) {
         listeners.add(toAdd);
     }
 
-    private void notifyListeners() {
+    private void notifyListeners(String pos) {
         for (DeviceListener dl : listeners) {
-            dl.waspNotification();
+            dl.waspNotification(pos);
         }
     }
 
     public static void main(String[] args) throws Exception {
-    /*    SerialTest main = new SerialTest();
-        main.Start();
-    /*    Thread t = new Thread() {
-            public void run() {
-                //the following line will keep this app alive for 1000 seconds,
-                //waiting for events to occur and responding to them (printing incoming messages to console).
-                try {
-                    Thread.sleep(100000);
-                } catch (InterruptedException ie) {
-                }
-            }
-        };
-        t.start();*/
+        /*    SerialTest main = new SerialTest();
+         main.Start();
+         /*    Thread t = new Thread() {
+         public void run() {
+         //the following line will keep this app alive for 1000 seconds,
+         //waiting for events to occur and responding to them (printing incoming messages to console).
+         try {
+         Thread.sleep(100000);
+         } catch (InterruptedException ie) {
+         }
+         }
+         };
+         t.start();*/
         System.out.println("Started");
     }
 }

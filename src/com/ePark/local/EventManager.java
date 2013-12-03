@@ -57,7 +57,7 @@ public class EventManager implements DeviceListener {
         //manager. A magnetic notification is needed for the confirmation
 
         //########################### TESTING ONLY
-        waspNotification();
+        waspNotification(null);
     }
 
     /**
@@ -65,12 +65,12 @@ public class EventManager implements DeviceListener {
      * testing needs the manager does not recognize IN and OUT magnetic sensors
      */
     @Override
-    public void waspNotification() {
+    public void waspNotification(String pos) {
 
         //Supposing it is a magnetic at the entrance            
         TagEvent theTagEvent = readerManager.getLastINEvent();
 
-        processDeparture(theTagEvent);
+   //     processDeparture(theTagEvent);
 
 
     }
@@ -88,7 +88,7 @@ public class EventManager implements DeviceListener {
                 EparkIO.storeArrival(te, true);
             } else {
                 EparkIO.storeArrival(te, false);
-                new Thread(new ResendTask(this, te)).start();
+                //no demo new Thread(new ResendTask(this, te)).start();
             }
             readerManager.removeTag(te.getTagid());
         }
@@ -109,7 +109,7 @@ public class EventManager implements DeviceListener {
                 EparkIO.storeCompletion(te, true, fee);
             } else {
                 EparkIO.storeCompletion(te, false, -1d);
-                new Thread(new ResendTask(this, te)).start();
+                //no demo new Thread(new ResendTask(this, te)).start();
             }
             readerManager.removeTag(te.getTagid());
         }
