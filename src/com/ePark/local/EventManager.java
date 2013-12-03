@@ -50,6 +50,11 @@ public class EventManager implements DeviceListener {
         readerManager.Start();
         waspManager.Start();
     }
+    
+    public void shutdown(){
+        System.out.println("Closing ports");
+        waspManager.close();
+    }
 
     @Override
     public void readerNotification(TagEvent ev) {

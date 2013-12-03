@@ -14,5 +14,6 @@ public interface DeviceListener {
     
     public void readerNotification(TagEvent ev);
     public void waspNotification(String pos);
+    public void shutdown();
         
 }

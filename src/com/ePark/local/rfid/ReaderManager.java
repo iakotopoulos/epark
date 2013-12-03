@@ -39,6 +39,7 @@ public class ReaderManager {
     //The list of connected readers. The list is populated on start and is based on the reader IP
     private LinkedHashMap<String, Reader> readerList;
     private ArrayList<DeviceListener> listeners;
+    
 
     public ReaderManager() {
         AppConfiguration.loadConfiguration();
@@ -68,6 +69,8 @@ public class ReaderManager {
                             outputCommand.println("Stop");
                             outputCommand.close();
                         }
+                        System.out.println("Shutting down");
+                        closeNotification();
                         return;
                     }
                 } catch (IOException e) {
@@ -142,6 +145,12 @@ public class ReaderManager {
     private void notifyListeners(TagEvent ev) {
         for (DeviceListener dl : listeners) {
             dl.readerNotification(ev);
+        }
+    }
+    
+    private void closeNotification(){
+        for (DeviceListener dl : listeners) {
+            dl.shutdown();
         }
     }
 
