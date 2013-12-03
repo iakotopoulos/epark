@@ -84,7 +84,7 @@ public class SerialManager implements SerialPortEventListener {
             // open serial port, and use class name for the appName.
             serialPort = (SerialPort) portId.open(this.getClass().getName(),
                     TIME_OUT);
-
+            serialPort.enableReceiveTimeout(1000);
             // set port parameters
             serialPort.setSerialPortParams(DATA_RATE,
                     SerialPort.DATABITS_8,
@@ -124,13 +124,15 @@ public class SerialManager implements SerialPortEventListener {
                 String inputLine = input.readLine();
                 //System.out.println(inputLine);
                 String pos = null;
-                if (inputLine != null && inputLine.length() > 1 && inputLine.indexOf("EX")>0) {
+                if (inputLine != null && inputLine.indexOf("EXIT")>0) {
                     pos="EX";
                     System.out.println("Exit");
-                } else if (inputLine != null && inputLine.length() > 1 && inputLine.indexOf("EN")>0) {
+                } else if (inputLine != null && inputLine.indexOf("ENTRANCE")>0) {
                     pos="IN";
                     System.out.println("Entrance");
-                }
+                }/*else if(inputLine.indexOf("Entered")>0){
+                    System.out.println("communicating");
+                }&& EX1*/
 
               //  notifyListeners(pos);
             } catch (Exception e) {
