@@ -124,17 +124,17 @@ public class SerialManager implements SerialPortEventListener {
                 String inputLine = input.readLine();
                 //System.out.println(inputLine);
                 String pos = null;
-                if (inputLine != null && inputLine.indexOf("EXIT")>0) {
-                    pos="EX";
+                if (inputLine != null && inputLine.indexOf("EXIT") > 0) {
+                    pos = "EX";
                     System.out.println("Exit");
-                } else if (inputLine != null && inputLine.indexOf("ENTRANCE")>0) {
-                    pos="IN";
+                } else if (inputLine != null && inputLine.indexOf("ENTRANCE") > 0) {
+                    pos = "IN";
                     System.out.println("Entrance");
                 }/*else if(inputLine.indexOf("Entered")>0){
-                    System.out.println("communicating");
-                }&& EX1*/
+                 System.out.println("communicating");
+                 }&& EX1*/
 
-              //  notifyListeners(pos);
+                notifyListeners(pos);
             } catch (Exception e) {
                 System.err.println(e.toString());
             }

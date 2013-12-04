@@ -50,8 +50,8 @@ public class EventManager implements DeviceListener {
         readerManager.Start();
         waspManager.Start();
     }
-    
-    public void shutdown(){
+
+    public void shutdown() {
         System.out.println("Closing ports");
         waspManager.close();
     }
@@ -62,7 +62,13 @@ public class EventManager implements DeviceListener {
         //manager. A magnetic notification is needed for the confirmation
 
         //########################### TESTING ONLY
-        waspNotification(null);
+
+       /* if (ev.getTheReader().isEntrance()) {
+            waspNotification("IN");
+        } else {
+            waspNotification("OUT");
+        }*/
+
     }
 
     /**
@@ -71,19 +77,23 @@ public class EventManager implements DeviceListener {
      */
     @Override
     public void waspNotification(String pos) {
+        System.out.println("calling " + pos);
+        //Supposing it is a magnetic at the entrance          
 
-        //Supposing it is a magnetic at the entrance            
-        TagEvent theTagEvent = readerManager.getLastINEvent();
+        if (pos != null && pos.equals("IN")) {
+            TagEvent theTagEvent = readerManager.getLastINEvent();
 
-   //     processDeparture(theTagEvent);
-
-
+            processArrival(theTagEvent);
+        } else if (pos != null) {
+            TagEvent theTagEvent = readerManager.getLastOUTEvent();
+            processDeparture(theTagEvent);
+        }
     }
 
-    private void processArrival(TagEvent te, boolean send) {
+    private void processArrival(TagEvent te) {
         ArrivalResponse response = null;
         try {            // 
-
+            System.out.println("Store");
             response = sendArrival("IN", te);
 
         } catch (ParkingException ex) {
@@ -101,6 +111,7 @@ public class EventManager implements DeviceListener {
 
     private void processDeparture(TagEvent te) {
         DepartureResponse response = null;
+        System.out.println("Store");
         try {            // 
 
             response = sendDeparture("OUT", te);
@@ -125,7 +136,7 @@ public class EventManager implements DeviceListener {
         DepartureResponse response = null;
         try {
 
-            response = httpPost.postDeparture(mtype, "1.0", AppConfiguration.getProperty("parking_name"), "1234567890", "123", theTagEvent.getEventStampString(), theTagEvent.getTheReader().getIp(), "0");
+            response = httpPost.postDeparture(mtype, "1.0", AppConfiguration.getProperty("parking_name"), theTagEvent.getTagid(), "123", theTagEvent.getEventStampString(), theTagEvent.getTheReader().getIp(), "0");
             return response;
 
         } catch (SocketTimeoutException ex) {
@@ -148,7 +159,7 @@ public class EventManager implements DeviceListener {
 
         try {
 
-            response = httpPost.postArrival(mtype, "1.0", AppConfiguration.getProperty("parking_name"), "1234567890"/*theTagEvent.getTagid()*/, "123", theTagEvent.getEventStampString(), theTagEvent.getTheReader().getIp());
+            response = httpPost.postArrival(mtype, "1.0", AppConfiguration.getProperty("parking_name"), theTagEvent.getTagid(), "123", theTagEvent.getEventStampString(), theTagEvent.getTheReader().getIp());
             return response;
 
         } catch (SocketTimeoutException ex) {
