@@ -138,7 +138,7 @@ public class SerialManager implements SerialPortEventListener {
                 notifyListeners(pos);
                 
             } catch (Exception e) {
-                System.err.println(e.toString());
+                System.out.println("my - " + e.toString());
             }
         }
         // Ignore all the other eventTypes, but you should consider the other ones.
