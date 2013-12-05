@@ -27,6 +27,7 @@ public class SerialManager implements SerialPortEventListener {
 
     SerialPort serialPort;
     private ArrayList<DeviceListener> listeners;
+    private int packetCheck;
     /**
      * The port name examples... Replaced this with a parameter in order to be
      * easily configured
