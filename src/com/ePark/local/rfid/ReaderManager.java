@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 public class ReaderManager {
 
     public static final int MAX_PROCESS = 5;
-    public final int MIN_OCCURENCE = 20;
+    public final int MIN_OCCURENCE = 40;
     private Thread[] m_run_process;
     private Process[] m_javap;
     private int lastProcessId;
@@ -39,7 +39,6 @@ public class ReaderManager {
     //The list of connected readers. The list is populated on start and is based on the reader IP
     private LinkedHashMap<String, Reader> readerList;
     private ArrayList<DeviceListener> listeners;
-    
 
     public ReaderManager() {
         AppConfiguration.loadConfiguration();
@@ -147,8 +146,8 @@ public class ReaderManager {
             dl.readerNotification(ev);
         }
     }
-    
-    private void closeNotification(){
+
+    private void closeNotification() {
         for (DeviceListener dl : listeners) {
             dl.shutdown();
         }
@@ -165,7 +164,7 @@ public class ReaderManager {
         Collections.sort(tempList);
 
         for (TagEvent ev : tempList) {
-            if (ev.getTheReader().isEntrance() && (System.currentTimeMillis() - ev.getEventStamp().getTime()) < 30000) {
+            if (ev.getTheReader().isEntrance() && (System.currentTimeMillis() - ev.getEventStamp().getTime()) < 20000) {
                 return ev;
             }
         }
@@ -177,7 +176,7 @@ public class ReaderManager {
         Collections.sort(tempList);
 
         for (TagEvent ev : tempList) {
-            if (!ev.getTheReader().isEntrance()) {
+            if (!ev.getTheReader().isEntrance() && (System.currentTimeMillis() - ev.getEventStamp().getTime()) < 20000) {
                 return ev;
             }
         }

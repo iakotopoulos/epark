@@ -6,6 +6,7 @@ package com.ePark.local;
 
 import com.ePark.data.io.AppConfiguration;
 import com.ePark.data.io.EparkIO;
+import com.ePark.http_json.AUResponse;
 import com.ePark.http_json.ArrivalResponse;
 import com.ePark.http_json.DepartureResponse;
 import com.ePark.http_json.HttpPoster;
@@ -15,13 +16,11 @@ import com.ePark.local.events.DeviceListener;
 import com.ePark.local.rfid.ReaderManager;
 import com.ePark.local.sensors.SerialManager;
 import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
-import com.ePark.local.tasks.ResendTask;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.sf.json.JSONObject;
 
 /**
  *
@@ -60,15 +59,13 @@ public class EventManager implements DeviceListener {
     public void readerNotification(TagEvent ev) {
         //In the current implementation the event is not important for the event
         //manager. A magnetic notification is needed for the confirmation
-
         //########################### TESTING ONLY
 
-       /* if (ev.getTheReader().isEntrance()) {
-            waspNotification("IN");
-        } else {
-            waspNotification("OUT");
-        }*/
-
+        /* if (ev.getTheReader().isEntrance()) {
+         waspNotification("IN");
+         } else {
+         waspNotification("OUT");
+         }*/
     }
 
     /**
@@ -78,16 +75,18 @@ public class EventManager implements DeviceListener {
     @Override
     public void waspNotification(String pos) {
         System.out.println("calling " + pos);
-        //Supposing it is a magnetic at the entrance          
 
         if (pos != null && pos.equals("IN")) {
             TagEvent theTagEvent = readerManager.getLastINEvent();
-
             processArrival(theTagEvent);
+            sendAvailabilityUpdate(pos, theTagEvent);
+
         } else if (pos != null) {
             TagEvent theTagEvent = readerManager.getLastOUTEvent();
             processDeparture(theTagEvent);
+            sendAvailabilityUpdate(pos, theTagEvent);
         }
+
     }
 
     private void processArrival(TagEvent te) {
@@ -99,6 +98,7 @@ public class EventManager implements DeviceListener {
         } catch (ParkingException ex) {
             Logger.getLogger(EventManager.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
+            System.out.println("Store arr");
             if (response != null) {
                 EparkIO.storeArrival(te, true);
             } else {
@@ -111,7 +111,7 @@ public class EventManager implements DeviceListener {
 
     private void processDeparture(TagEvent te) {
         DepartureResponse response = null;
-        System.out.println("Store");
+        
         try {            // 
 
             response = sendDeparture("OUT", te);
@@ -119,7 +119,7 @@ public class EventManager implements DeviceListener {
         } catch (ParkingException ex) {
             Logger.getLogger(EventManager.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-
+            System.out.println("Store dep");
             if (response != null) {
                 Double fee = response.getFeeAmount();
                 EparkIO.storeCompletion(te, true, fee);
@@ -151,6 +151,27 @@ public class EventManager implements DeviceListener {
         } catch (IOException ex) {
             Logger.getLogger(EventManager.class.getName()).log(Level.SEVERE, null, ex);
             return null;
+        }
+    }
+
+    public void sendAvailabilityUpdate(String type, TagEvent theTagEvent) {
+
+        int in = 0;
+        int out = 0;
+
+        in = (type.equals("IN")) ? 1 : 0;
+        out = (type.equals("EX")) ? 1 : 0;
+        try {
+            AUResponse au_test = httpPost.postAvailabilityUpdate(AppConfiguration.getProperty("parking_name"), in + "", out + "", theTagEvent.getTheReader().getIp());
+
+        } catch (SocketTimeoutException ex) {
+            Logger.getLogger(EventManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MessageTypeException | ParkingException ex) {
+            Logger.getLogger(EventManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(EventManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(EventManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

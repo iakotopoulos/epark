@@ -136,6 +136,7 @@ public class SerialManager implements SerialPortEventListener {
                  }&& EX1*/
 
                 notifyListeners(pos);
+                
             } catch (Exception e) {
                 System.err.println(e.toString());
             }
