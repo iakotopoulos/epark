@@ -123,7 +123,7 @@ public class SerialManager implements SerialPortEventListener {
         if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
             try {
                 String inputLine = input.readLine();
-                //System.out.println(inputLine);
+                //System.out.println(inputLine );
                 String pos = null;
                 if (inputLine != null && inputLine.indexOf("EXIT13") > 0) {
                     pos = "EX";
