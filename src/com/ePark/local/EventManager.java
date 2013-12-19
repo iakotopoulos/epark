@@ -78,7 +78,9 @@ public class EventManager implements DeviceListener {
 
         if (pos != null && pos.equals("IN")) {
             TagEvent theTagEvent = readerManager.getLastINEvent();
-            processArrival(theTagEvent);
+            if (theTagEvent != null) {
+                processArrival(theTagEvent);
+            }
             sendAvailabilityUpdate(pos, theTagEvent);
 
         } else if (pos != null) {
@@ -111,7 +113,7 @@ public class EventManager implements DeviceListener {
 
     private void processDeparture(TagEvent te) {
         DepartureResponse response = null;
-        
+
         try {            // 
 
             response = sendDeparture("OUT", te);
