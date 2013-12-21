@@ -133,7 +133,7 @@ public class HttpPoster {
 
 
         JSONObject jsonResponse = JSONObject.fromObject(response.toString());
-        if (jsonResponse.get("response_code") != 1) {
+        if (jsonResponse.getInt("response_code") != 1) {
             throw new ParkingException(jsonResponse.getString("response_message"));
         }
         return jsonResponse;
