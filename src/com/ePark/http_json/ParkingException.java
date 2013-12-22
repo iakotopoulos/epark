@@ -5,8 +5,8 @@
 package com.ePark.http_json;
 
 /**
- *
- * @author pkaramol
+ * Custom exception thrown by HttpPoster class when the web service returns a response_code other than 1 (which indicates success)
+ * @author Pantelis Karamolegkos
  */
 public class ParkingException extends Exception {
 

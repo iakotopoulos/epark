@@ -5,8 +5,9 @@
 package com.ePark.http_json;
 
 /**
- *
- * @author pantelis
+ * Configuration class for the web service / http communication with the main site.
+ * 
+ * @author Pantelis Karamolegkos
  */
 public class Config {
 

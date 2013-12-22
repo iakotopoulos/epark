@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author pkaramol
+ * @author Pantelis Karamolegkos
  */
 public class TestResponseMain {
 
