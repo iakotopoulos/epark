@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.ePark.http_json;
 
 import java.io.BufferedReader;
@@ -12,26 +8,39 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import net.sf.json.JSONObject;
 
-//import net.sf.json.JSONException;
+    
 /**
- *
- * @author pantelis
+ * HttpPoster is class that undertakes http posting of epark events.
+ * 
+ * Incorporates methods for posting arrival, departure, as also questions on
+ * availability updates.
+ * Uses configuration settings from the Config class
+ * @author Pantelis Karamolegkos
+ * @see Config
  */
+
 public class HttpPoster {
 
     private String url = "";
     private String urlParameters;
     private int responseCode = 0;
     private HttpURLConnection con = null;
-    private int connectTimeout = Config.connectTimeout;
-    private int readTimeout = Config.readTimeout;
+    private final int connectTimeout = Config.connectTimeout;
+    private final int readTimeout = Config.readTimeout;
 
 
-    /*
-     public HttpPoster() {
-     System.out.println("Creating HttpPoster object");
-     System.out.println("Timeout is: " + connectTimeout);
-     }
+    /**
+     * Formats the url to make the http post by parsing the fields of the JSONObject passed in and the request type.
+     * 
+     * Example urls produced:
+     * <li> for arrival: http://parking.itenasolutions.com:8080/json/reply/VehicleArrival?message_type=IN&version=1&parking_code=PK001&tag_identifier=1234567890&time_in=20130923210100&reader_code=123
+     * <li> for departure: http://parking.itenasolutions.com:8080/json/reply/VehicleDeparture?message_type=OUT&version=1&parking_code=PK001&tag_identifier=1234567890&time_out=20130923210100&reader_code=123&tag_data=123&ticket_number=0
+     * <li> for availability update: http://parking.itenasolutions.com:8080/json/reply/AvailabilityUpdate?version=1&parking_code=PK001&add_incoming=1&add_outgoing=0&reader_code=123
+     * @param request_type Should be either "event" (from which point we distinguish on arrival or departure events based on the message_type field of the JSONObject
+     * or "au" for availability updates
+     * @param jsonIn The JSONObject used create the request
+     * @throws MessageTypeException 
+     * @see net.sf.json.JSONObject
      */
     private void formatUrl(String request_type, JSONObject jsonIn) throws MessageTypeException {
 
@@ -74,6 +83,22 @@ public class HttpPoster {
         urlParameters = paramsBuild.toString();
     }
 
+    /**
+     * This method is called by the public methods used to post the events to actually make the http post.
+     * 
+     * Calls formatUrl to retrieve the url that will be used to make the http post and uses java.net.HttpURLConnection for http communication with the main site.
+     * Retrieves a JSONObject as a response and if the "response_code" field of the later is not equal to 1 (which indicates success) a ParkingException is thrown
+     * 
+     * 
+     * @param request_type
+     * @param jsonIn
+     * @return
+     * @throws java.net.SocketTimeoutException
+     * @throws MessageTypeException
+     * @throws java.net.MalformedURLException
+     * @throws IOException
+     * @throws ParkingException 
+     */
     private JSONObject postEvent(String request_type, JSONObject jsonIn) throws java.net.SocketTimeoutException, MessageTypeException,
             java.net.MalformedURLException, IOException, ParkingException {
 
@@ -133,12 +158,32 @@ public class HttpPoster {
 
 
         JSONObject jsonResponse = JSONObject.fromObject(response.toString());
-        if (jsonResponse.get("response_code") != 1) {
+        if (jsonResponse.getInt("response_code") != 1) {
             throw new ParkingException(jsonResponse.getString("response_message"));
         }
         return jsonResponse;
     }
 
+    /**
+     * The method used to post an arrival event to the main server.
+     * 
+     * Creates a JSONObject from the String fields passed in which is latter passed to the postEvent private method to make the actual http post.
+     * 
+     * @param message_type A String that should be either IN (for synchronous arrival postings) or INOFFLINE (for posting arrivals asynchronously when the server is offline)
+     * @param version The Version of the communication protocol used between main site and parking sites - should be set to 1
+     * @param parking_code Should be set to PK001 for Lydra's Parking / Nicosia and PK002 for Strovolou Parking
+     * @param tag_identifier The ID of the tag used in the car entering the parking
+     * @param tag_data Other data to pass to the server. Pass the User data written on the tag
+     * @param time_in For message_type IN the server's time is used and the field is ignored. For message_type INOFFLINE we use this time expected yyyyMMddHHmmss  (24 hour basis)
+     * @param reader_code Identifier of the reader used to detect the tag
+     * @return Returns an ArrivalResponse object
+     * @throws java.net.SocketTimeoutException
+     * @throws MessageTypeException
+     * @throws java.net.MalformedURLException
+     * @throws java.io.IOException
+     * @throws ParkingException 
+     * @see ArrivalResponse
+     */
     public ArrivalResponse postArrival(String message_type, String version,
             String parking_code, String tag_identifier, String tag_data, String time_in, String reader_code) throws java.net.SocketTimeoutException,
             MessageTypeException, java.net.MalformedURLException, java.io.IOException, ParkingException {
@@ -156,7 +201,28 @@ public class HttpPoster {
         return new ArrivalResponse(jsonResponse);
 
     }
-
+    
+    /**
+     * The method used to post a departure event to the main server.
+     * Creates a JSONObject from the String fields passed in which is latter passed to the postEvent private method to make the actual http post.
+     * 
+     * @param message_type A String that should be either OUT (for synchronous departure postings) or INOFFLINE (for posting departures asynchronously when the server is offline)
+     * @param version The Version of the communication protocol used between main site and parking sites - should be set to 1
+     * @param parking_code Should be set to PK001 for Lydra's Parking / Nicosia and PK002 for Strovolou Parking
+     * @param tag_identifier The ID of the tag used in the car entering the parking
+     * @param tag_data Other data to pass to the server. Pass the User data written on the tag
+     * @param time_out For message_type OUT the server's time is used and the field is ignored. For message_type OUTOFFLINE we use this time expected yyyyMMddHHmmss  (24 hour basis)
+     * @param reader_code Identifier of the reader used to detect the tag
+     * @param ticket_number Unique Identifier of the transaction between main and remote sites
+     * @return DepartureResponse
+     * @throws java.net.SocketTimeoutException
+     * @throws MessageTypeException
+     * @throws java.net.MalformedURLException
+     * @throws java.io.IOException
+     * @throws ParkingException 
+     * @see Returns a DepartureReponse object
+     */
+    
     public DepartureResponse postDeparture(String message_type, String version,
             String parking_code, String tag_identifier, String tag_data, String time_out, String reader_code, String ticket_number) throws java.net.SocketTimeoutException,
             MessageTypeException, java.net.MalformedURLException, java.io.IOException, ParkingException {
@@ -175,7 +241,24 @@ public class HttpPoster {
         return new DepartureResponse(jsonResponse);
 
     }
-
+    
+    /**
+     * Method used to query for / update on available parking spots.
+     * 
+     * When add_incoming = add_outgoing = 0, just returns the number of available spots, otherwise it is used to 
+     * update the main site on number of parking spots through those two parameters
+     * 
+     * @param parking_code Should be set to PK001 for Lydra's Parking / Nicosia and PK002 for Strovolou Parking
+     * @param add_incoming The number of new arrivals when updating
+     * @param add_outgoing The number of new departures when updating
+     * @param reader_code Identifier of the reader used to detect the tag
+     * @return Returns an AUReponse object
+     * @throws java.net.SocketTimeoutException
+     * @throws MessageTypeException
+     * @throws java.net.MalformedURLException
+     * @throws java.io.IOException
+     * @throws ParkingException 
+     */
     public AUResponse postAvailabilityUpdate(String parking_code, String add_incoming, String add_outgoing, String reader_code) throws java.net.SocketTimeoutException,
             MessageTypeException, java.net.MalformedURLException, java.io.IOException, ParkingException {
         JSONObject jsonAvailabilityUpdate = new JSONObject();

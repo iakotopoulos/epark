@@ -5,8 +5,9 @@
 package com.ePark.http_json;
 
 /**
- *
- * @author pkaramol
+ * Custom exception thrown by HttpPoster class in case of unrecognized message type.
+ *  
+ * @author Pantelis Karamolegkos
  */
 public class MessageTypeException extends Exception {
 
