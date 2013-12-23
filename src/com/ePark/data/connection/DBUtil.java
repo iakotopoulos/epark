@@ -13,6 +13,7 @@ import java.util.logging.Logger;
  * but know I started using try-with-resources of java 1.7+
  * @author I-A
  */
+@Deprecated
 public class DBUtil {
 
     public static void closeStatement(Statement s) {
