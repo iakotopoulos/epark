@@ -4,7 +4,7 @@
  */
 package com.ePark.data.io;
 
-import com.ePark.local.rfid.epark.local.rfid.data.Reader;
+import com.ePark.local.rfid.data.Reader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;

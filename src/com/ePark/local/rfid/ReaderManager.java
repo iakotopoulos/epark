@@ -6,8 +6,8 @@ package com.ePark.local.rfid;
 
 import com.ePark.data.io.AppConfiguration;
 import com.ePark.local.events.DeviceListener;
-import com.ePark.local.rfid.epark.local.rfid.data.Reader;
-import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
+import com.ePark.local.rfid.data.Reader;
+import com.ePark.local.rfid.data.TagEvent;
 import com.ePark.local.tasks.ReaderProcess;
 import java.io.BufferedReader;
 import java.io.IOException;

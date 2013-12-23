@@ -15,7 +15,7 @@ import com.ePark.http_json.ParkingException;
 import com.ePark.local.events.DeviceListener;
 import com.ePark.local.rfid.ReaderManager;
 import com.ePark.local.sensors.SerialManager;
-import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
+import com.ePark.local.rfid.data.TagEvent;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
@@ -23,6 +23,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * This is the main class encapsulating the business logic of the local system.
+ * Its members are the the managers of the different devices and it is the only
+ * class that has access to their state and data. Crucial for the whole workflow
+ * is the implementation of the DeviceListener interface as everything is event
+ * based. The class is also responsible for starting all the managers and
+ * properly shutting down the system.
  *
  * @author I-A
  */
@@ -32,6 +38,12 @@ public class EventManager implements DeviceListener {
     private SerialManager waspManager;
     private HttpPoster httpPost;
 
+    /**
+     * It is the only constructor for the EventManager. It creates an instance
+     * for each manager and adds them a listener. It also created an instance of
+     * the HttpPoster class which is used for the communication with the main
+     * system.
+     */
     public EventManager() {
         httpPost = new HttpPoster();
 
@@ -43,18 +55,36 @@ public class EventManager implements DeviceListener {
     }
 
     /**
-     * Start managers. For now only Readers
+     * Starts all the needed managers. In this version we have ReaderManager for
+     * the RFID readers and SerialManager for the waspmote gateway.
      */
     public void Start() {
         readerManager.Start();
         waspManager.Start();
     }
 
+    /**
+     * The method is called upon the shutdown of the system. It only makes sure
+     * that the communication with the serial port is closed and the port
+     * released. The reader are handled by the
+     * {@link com.ePark.local.rfid.ReaderManager} himself for the shutdown
+     */
+    @Override
     public void shutdown() {
         System.out.println("Closing ports");
         waspManager.close();
     }
 
+    /**
+     * This is the method implementing the reader handler listening for events
+     * from the {@link com.ePark.local.rfid.ReaderManager}. In the Nicosia demo
+     * it was ignored as the EventManager was interested only for waspmote
+     * events. Every other data handling regarding the RFID readers was done by
+     * the {@link com.ePark.local.rfid.ReaderManager} himself.
+     *
+     * @param ev the {@link com.ePark.local.rfid.data.TagEvent}
+     * that has to be handled.
+     */
     @Override
     public void readerNotification(TagEvent ev) {
         //In the current implementation the event is not important for the event
@@ -69,8 +99,15 @@ public class EventManager implements DeviceListener {
     }
 
     /**
-     * This is the magnetic sensor notification. In the current version for the
-     * testing needs the manager does not recognize IN and OUT magnetic sensors
+     * This is the method implementing the waspmote handler listening for events
+     * from the serial port. It is actually listening for events from the
+     * waspmote magnetic sensors. It is the critical handler implementing the
+     * logic of the local system. It is also responsible for communicating with
+     * the central system.
+     *
+     * @param pos it is a String 'IN' || 'OUT' passed from the
+     * {@link com.ePark.local.sensors.SerialManager} and indicating the position
+     * (i.e. entrance or exit) of the triggering sensor
      */
     @Override
     public void waspNotification(String pos) {
@@ -91,6 +128,13 @@ public class EventManager implements DeviceListener {
 
     }
 
+    /**
+     * It is a private method used by the EventManager for processing an arrival
+     * event. The method must: communicate the event to the central server.
+     * Store the event to the local database.
+     *
+     * @param te the {@link com.ePark.local.rfid.data.TagEvent} to be processed
+     */
     private void processArrival(TagEvent te) {
         ArrivalResponse response = null;
         try {            // 
@@ -111,6 +155,13 @@ public class EventManager implements DeviceListener {
         }
     }
 
+    /**
+     * It is a private method used by the EventManager for processing a departure
+     * event. The method must: communicate the event to the central server.
+     * Update the local database.
+     *
+     * @param te the {@link com.ePark.local.rfid.data.TagEvent} to be processed
+     */
     private void processDeparture(TagEvent te) {
         DepartureResponse response = null;
 
@@ -134,6 +185,13 @@ public class EventManager implements DeviceListener {
 
     }
 
+    /**
+     * 
+     * @param mtype
+     * @param theTagEvent
+     * @return
+     * @throws ParkingException 
+     */
     public DepartureResponse sendDeparture(String mtype, TagEvent theTagEvent) throws ParkingException {
         DepartureResponse response = null;
         try {
@@ -156,6 +214,11 @@ public class EventManager implements DeviceListener {
         }
     }
 
+    /**
+     * 
+     * @param type
+     * @param theTagEvent 
+     */
     public void sendAvailabilityUpdate(String type, TagEvent theTagEvent) {
 
         int in = 0;
@@ -177,6 +240,13 @@ public class EventManager implements DeviceListener {
         }
     }
 
+    /**
+     * 
+     * @param mtype
+     * @param theTagEvent
+     * @return
+     * @throws ParkingException 
+     */
     public ArrivalResponse sendArrival(String mtype, TagEvent theTagEvent) throws ParkingException {
         ArrivalResponse response;
 

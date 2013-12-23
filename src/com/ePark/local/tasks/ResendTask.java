@@ -6,7 +6,7 @@ package com.ePark.local.tasks;
 
 import com.ePark.http_json.ParkingException;
 import com.ePark.local.EventManager;
-import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
+import com.ePark.local.rfid.data.TagEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

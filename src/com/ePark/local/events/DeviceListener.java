@@ -4,7 +4,7 @@
  */
 package com.ePark.local.events;
 
-import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
+import com.ePark.local.rfid.data.TagEvent;
 
 /**
  *

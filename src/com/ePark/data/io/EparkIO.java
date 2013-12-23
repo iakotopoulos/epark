@@ -5,7 +5,7 @@
 package com.ePark.data.io;
 
 import com.ePark.data.connection.DBConnection;
-import com.ePark.local.rfid.epark.local.rfid.data.TagEvent;
+import com.ePark.local.rfid.data.TagEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
