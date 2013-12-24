@@ -20,6 +20,8 @@ import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
 /**
+ * This is an important class used for handling communication with the serial
+ * port. It is directly used for handling input from the waspmote gateway.
  *
  * @author I-A
  */
@@ -117,6 +119,10 @@ public class SerialManager implements SerialPortEventListener {
 
     /**
      * Handle an event on the serial port. Read the data and print it.
+     * IMPORTANT: this method is part of the business logic as it is responsible
+     * for parsing the data passed from the waspmote sensors. For this purpose
+     * it must be aware of the specific hardcoded strings included in the passed
+     * data from the waspmotes.
      */
     @Override
     public synchronized void serialEvent(SerialPortEvent oEvent) {
@@ -136,7 +142,7 @@ public class SerialManager implements SerialPortEventListener {
                  }&& EX1*/
 
                 notifyListeners(pos);
-                
+
             } catch (Exception e) {
                 System.out.println("my - " + e.toString());
             }
@@ -144,16 +150,37 @@ public class SerialManager implements SerialPortEventListener {
         // Ignore all the other eventTypes, but you should consider the other ones.
     }
 
+    /**
+     * This is necessary for adding a listener to the class. It is crucial as it
+     * is the only way to make the connection with the
+     * {@link com.ePark.local.EventManager} which acts as the listener of all
+     * the events in the local system
+     *
+     * @param toAdd the calls acting as the listener. Here it is the main
+     * {@link com.ePark.local.EventManager} Object
+     */
     public void addListener(DeviceListener toAdd) {
         listeners.add(toAdd);
     }
 
+    /**
+     * Invoke the listeners on an event. (Only one listener here but it is
+     * implemented in a more generalized way)
+     *
+     * @param pos indicates if the event was triggered by an arrival or a
+     * departure
+     */
     private void notifyListeners(String pos) {
         for (DeviceListener dl : listeners) {
             dl.waspNotification(pos);
         }
     }
 
+    /**
+     * It was used only for testing purposes
+     * @param args ..
+     * @throws Exception ..
+     */
     public static void main(String[] args) throws Exception {
         /*    SerialTest main = new SerialTest();
          main.Start();

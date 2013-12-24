@@ -5,6 +5,7 @@
 package com.ePark.local.rfid.data;
 
 /**
+ * Description attributes of the reader
  *
  * @author I-A
  */
@@ -45,6 +46,10 @@ public class Reader {
         this.role = role;
     }
 
+    /**
+     * 
+     * @return true if the reader is placed at the entrance, false otherwise
+     */
     public boolean isEntrance() {
         return role.equals("in");
     }

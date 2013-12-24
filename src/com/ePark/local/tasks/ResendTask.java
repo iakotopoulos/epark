@@ -11,6 +11,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * The class is created in order to allow a thread to handle the resend attempts
+ * on communication failures with the main system. 
+ * 
+ * It was not used or tested during the demo in Nicosia.
  *
  * @author ykoto
  */
@@ -39,7 +43,7 @@ public class ResendTask implements Runnable {
             } catch (ParkingException ex) {
                 Logger.getLogger(ResendTask.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }else{
+        } else {
             try {
                 while (manager.sendDeparture("OUT_OFFLINE", theTagEvent) == null) {
                     try {

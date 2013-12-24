@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class will be deprecated. I was necessary for secure closing of connections 
+ * This class will be deprecated. It was necessary for secure closing of connections 
  * but know I started using try-with-resources of java 1.7+
  * @author I-A
  */

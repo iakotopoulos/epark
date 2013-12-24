@@ -82,8 +82,8 @@ public class EventManager implements DeviceListener {
      * events. Every other data handling regarding the RFID readers was done by
      * the {@link com.ePark.local.rfid.ReaderManager} himself.
      *
-     * @param ev the {@link com.ePark.local.rfid.data.TagEvent}
-     * that has to be handled.
+     * @param ev the {@link com.ePark.local.rfid.data.TagEvent} that has to be
+     * handled.
      */
     @Override
     public void readerNotification(TagEvent ev) {
@@ -156,9 +156,9 @@ public class EventManager implements DeviceListener {
     }
 
     /**
-     * It is a private method used by the EventManager for processing a departure
-     * event. The method must: communicate the event to the central server.
-     * Update the local database.
+     * It is a private method used by the EventManager for processing a
+     * departure event. The method must: communicate the event to the central
+     * server. Update the local database.
      *
      * @param te the {@link com.ePark.local.rfid.data.TagEvent} to be processed
      */
@@ -186,11 +186,19 @@ public class EventManager implements DeviceListener {
     }
 
     /**
-     * 
-     * @param mtype
-     * @param theTagEvent
-     * @return
-     * @throws ParkingException 
+     * The method is used used to send data regarding a departure to the central
+     * server. The respective web service is used.
+     *
+     * @param mtype the message type OUT|OUTOFFLINE. You can find more details
+     * in {
+     * @see com.ePark.http_json.HttpPoster}
+     * @param theTagEvent the actual event that triggered the handler and has to
+     * be send
+     * @return the {@link com.ePark.http_json.DepartureResponse} as a wrapper of
+     * the actual response of the web service call
+     * @throws ParkingException an exception regarding the status of the
+     * outgoing vehicle/tag. It is thrown in order to be propagated. Any other
+     * exception is caught within the method.
      */
     public DepartureResponse sendDeparture(String mtype, TagEvent theTagEvent) throws ParkingException {
         DepartureResponse response = null;
@@ -215,9 +223,13 @@ public class EventManager implements DeviceListener {
     }
 
     /**
-     * 
-     * @param type
-     * @param theTagEvent 
+     * The method is a wrapper to the web service used for querying or updating
+     * the availability of the parking slots. Here it is used in order to either
+     * increase or decrease the availability by 1 after detecting an arrival or
+     * a departure.
+     *
+     * @param type the type of the event IN|EX for an arrival or a departure
+     * @param theTagEvent the event that triggered this call.
      */
     public void sendAvailabilityUpdate(String type, TagEvent theTagEvent) {
 
@@ -241,11 +253,19 @@ public class EventManager implements DeviceListener {
     }
 
     /**
-     * 
-     * @param mtype
-     * @param theTagEvent
-     * @return
-     * @throws ParkingException 
+     * The method is used used to send data regarding an arrival to the central
+     * server. The respective web service is used.
+     *
+     * @param mtype the message type IN|INOFFLINE. You can find more details in
+     * {
+     * @see com.ePark.http_json.HttpPoster}
+     * @param theTagEvent the actual event that triggered the handler and has to
+     * be send
+     * @return the {@link com.ePark.http_json.ArrivalResponse} as a wrapper of
+     * the actual response of the web service call
+     * @throws ParkingException an exception regarding the status of the
+     * incoming vehicle/tag. It is thrown in order to be propagated. Any other
+     * exception is caught within the method.
      */
     public ArrivalResponse sendArrival(String mtype, TagEvent theTagEvent) throws ParkingException {
         ArrivalResponse response;

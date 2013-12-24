@@ -21,9 +21,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This is the main class used to manage a reader's connections and events. This
- * class will either be refactored to conform a list of readers or another class
- * should be added to handle all the local readers
+ * This is the main class used to manage a list with all the connected RFID
+ * readers. Its responsibilities are: 1) Start a establish a connection with
+ * each reader 2) Maintain a list of all the connected readers 3) Act as a
+ * listeners for events from all the readers 4) Manage the list of the events 5)
+ * Shutdown the connections properly
  *
  * @author I-A
  */
@@ -82,7 +84,9 @@ public class ReaderManager {
 
     /**
      * The method is used to directly connect with a reader at the specified IP
-     * address
+     * address. To manage the connection a different thread and process is
+     * started. You can find more details in
+     * {@link com.ePark.local.tasks.ReaderProcess} class
      *
      * @param ip the ip of the target reader. The IP must be known or a default
      * IP will be used
@@ -102,6 +106,10 @@ public class ReaderManager {
         }
     }
 
+    /**
+     * A method used to start connection attempts with all the readers appearing
+     * in the list from the configuration files
+     */
     public void Start() {
         readerList = AppConfiguration.getReaders();
         for (String ip : readerList.keySet()) {
@@ -113,11 +121,15 @@ public class ReaderManager {
      * The method adds the new event. It is responsible for searching if the
      * event's tagid already exists. If the tagid already exists only the
      * timestamp of the event is added. If it is the first time a new event is
-     * added with the current timestamp
+     * added with the current timestamp. Also a minimum occurrence of tag events
+     * are used in order to avoid false detection of tag and false triggering of
+     * an event
      *
-     * @param r the reader that will produce the event
-     * @param s
-     * @param tagid the tagid of the current event
+     * @param r the reader that will trigger the event
+     * @param s It is part of the string passed from the reader process but it
+     * is not currently used and I also don't remember the initial used. It will
+     * be probably be removed in a future edition
+     * @param tagid the tagid of the current event i.e. the last read tag
      */
     public void newTagEvent(Reader r, String s, String tagid) {
         if (tagList.containsKey(tagid)) {
@@ -137,10 +149,25 @@ public class ReaderManager {
         }
     }
 
+     /**
+     * This is necessary for adding a listener to the class. It is crucial as it
+     * is the only way to make the connection with the
+     * {@link com.ePark.local.EventManager} which acts as the listener of all
+     * the events in the local system
+     *
+     * @param toAdd the calls acting as the listener. Here it is the main
+     * {@link com.ePark.local.EventManager} Object
+     */
     public void addListener(DeviceListener toAdd) {
         listeners.add(toAdd);
     }
 
+     /**
+     * Invoke the listeners on an event. (Only one listener here but it is
+     * implemented in a more generalized way)
+     *
+     * @param ev it is the triggering event 
+     */
     private void notifyListeners(TagEvent ev) {
         for (DeviceListener dl : listeners) {
             dl.readerNotification(ev);

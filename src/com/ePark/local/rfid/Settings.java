@@ -4,6 +4,13 @@ import java.io.*;
 import CSLibrary.Constants.*;
 import CSLibrary.Structures.*;
 
+/**
+ * The class was copied from the convergence demo app and is used only for
+ * initialization of the needed attributes needed for the connection with the
+ * CS203 RFID devices
+ *
+ * @author ykoto
+ */
 public class Settings {
 
     public static int Channel_number = 0;
